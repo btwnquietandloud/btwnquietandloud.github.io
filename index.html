@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Between Quiet and Loud - Stacy's Poetry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #F9F7F4;
+            --soft-blue: #A8C5D8;
+            --deep-blue: #5B7C8D;
+            --charcoal: #2C3E50;
+            --warm-gray: #6B6B6B;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Work Sans', sans-serif;
+            background: var(--cream);
+            color: var(--charcoal);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Subtle background texture */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(168, 197, 216, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(91, 124, 141, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: breatheIn 1.2s ease-out forwards;
+        }
+
+        .site-title {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 600;
+            color: var(--deep-blue);
+            letter-spacing: 0.02em;
+            margin-bottom: 0.5rem;
+        }
+
+        .divider {
+            width: 60px;
+            height: 2px;
+            background: var(--soft-blue);
+            margin: 1.5rem auto;
+        }
+
+        .photo-container {
+            width: 240px;
+            height: 240px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 2rem auto;
+            border: 3px solid var(--soft-blue);
+            box-shadow: 0 8px 24px rgba(91, 124, 141, 0.15);
+            opacity: 0;
+            animation: breatheIn 1.2s ease-out 0.3s forwards;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .poem-container {
+            width: 100%;
+            max-width: 800px;
+            margin: 3rem auto;
+            padding: 5rem 4rem;
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border-radius: 2px;
+            box-shadow: 0 4px 32px rgba(91, 124, 141, 0.08);
+            border-left: 3px solid var(--soft-blue);
+            opacity: 0;
+            animation: breatheIn 1.2s ease-out 0.6s forwards;
+            position: relative;
+            min-height: 300px;
+        }
+
+        .poem-slide {
+            position: absolute;
+            top: 5rem;
+            left: 4rem;
+            right: 4rem;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .poem-slide.active {
+            opacity: 1;
+        }
+
+        .poem-text {
+            font-family: 'Crimson Pro', serif;
+            font-size: clamp(1.1rem, 2vw, 1.35rem);
+            line-height: 1.9;
+            color: var(--charcoal);
+            font-style: italic;
+            text-align: left;
+        }
+
+        .poem-attribution {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--warm-gray);
+            margin-top: 2rem;
+            font-style: normal;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+
+        .coming-soon {
+            text-align: center;
+            margin-top: 4rem;
+            opacity: 0;
+            animation: breatheIn 1.2s ease-out 0.9s forwards;
+        }
+
+        .coming-soon-title {
+            font-family: 'Work Sans', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--deep-blue);
+            margin-bottom: 0.75rem;
+        }
+
+        .coming-soon-details {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1.1rem;
+            color: var(--warm-gray);
+            line-height: 1.8;
+        }
+
+        @keyframes breatheIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .poem-container {
+                padding: 4rem 2.5rem;
+                margin: 2rem auto;
+                min-height: 320px;
+            }
+
+            .poem-slide {
+                top: 4rem;
+                left: 2.5rem;
+                right: 2.5rem;
+            }
+
+            .header {
+                margin-bottom: 2rem;
+            }
+
+            .coming-soon {
+                margin-top: 2.5rem;
+            }
+
+            .photo-container {
+                width: 200px;
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .photo-container {
+                width: 180px;
+                height: 180px;
+            }
+
+            .poem-container {
+                padding: 3rem 2rem;
+                min-height: 340px;
+            }
+
+            .poem-slide {
+                top: 3rem;
+                left: 2rem;
+                right: 2rem;
+            }
+
+            .divider {
+                width: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="site-title">Between Quiet and Loud</h1>
+            <div class="divider"></div>
+        </header>
+
+        <div class="photo-container">
+            <img src="stacy2024.png" alt="Stacy">
+        </div>
+
+        <div class="poem-container">
+            <div class="poem-slide active">
+                <div class="poem-text">
+                    "I wait for that poem like a surfer<br>
+                    at the shore, returning each morning<br>
+                    with high hopes and big ambition.<br>
+                    one day it will come."
+                </div>
+                <div class="poem-attribution">
+                    — from Tidal Wave, 2005
+                </div>
+            </div>
+
+            <div class="poem-slide">
+                <div class="poem-text">
+                    "Our shared world<br>
+                    takes root<br>
+                    in breath."
+                </div>
+                <div class="poem-attribution">
+                    — from Inhale, 2025
+                </div>
+            </div>
+
+            <div class="poem-slide">
+                <div class="poem-text">
+                    "Sometimes<br>
+                    one beat<br>
+                    can shatter<br>
+                    stars."
+                </div>
+                <div class="poem-attribution">
+                    — from Supernova, 2025
+                </div>
+            </div>
+
+            <div class="poem-slide">
+                <div class="poem-text">
+                    "How soothing<br>
+                    this feeling<br>
+                    of finally."
+                </div>
+                <div class="poem-attribution">
+                    — from Cascade, 2025
+                </div>
+            </div>
+
+            <div class="poem-slide">
+                <div class="poem-text">
+                    "Love grows<br>
+                    in any soil."
+                </div>
+                <div class="poem-attribution">
+                    — from Vines, 2025
+                </div>
+            </div>
+        </div>
+
+        <div class="coming-soon">
+            <div class="coming-soon-title">Coming Soon</div>
+            <div class="coming-soon-details">
+                A collection of poetry spanning three decades<br>
+                Music · Audio · Photography · Story
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Cycle through poem slides
+        const slides = document.querySelectorAll('.poem-slide');
+        let currentSlide = 0;
+
+        function nextSlide() {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }
+
+        // Change poem every 5 seconds
+        setInterval(nextSlide, 5000);
+    </script>
+</body>
+</html>
