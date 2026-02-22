@@ -7,13 +7,17 @@
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Work+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,500&family=Lora:ital,wght@0,400;0,600;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --cream: #F9F7F4;
-            --soft-blue: #A8C5D8;
-            --deep-blue: #5B7C8D;
-            --charcoal: #2C3E50;
+            --light-grey: #E8E8E8;
+            --warm-white: #F5F5F5;
+            --muted-blue: #7B9CAF;
+            --soft-blue: #A3B8C9;
+            --deep-purple: #6B7C9B;
+            --lavender: #9B9BC4;
+            --slate-purple: #5A6B8E;
+            --charcoal: #3A3A4A;
             --warm-gray: #6B6B6B;
         }
 
@@ -24,14 +28,15 @@
         }
 
         body {
-            font-family: 'Work Sans', sans-serif;
-            background: var(--cream);
+            font-family: 'Source Serif 4', serif;
+            background: var(--light-grey);
             color: var(--charcoal);
             line-height: 1.6;
             overflow-x: hidden;
+            position: relative;
         }
 
-        /* Subtle background texture */
+        /* Layered atmospheric background */
         body::before {
             content: '';
             position: fixed;
@@ -39,90 +44,208 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(168, 197, 216, 0.08) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(91, 124, 141, 0.05) 0%, transparent 50%);
+            background: 
+                radial-gradient(circle at 15% 85%, rgba(123, 156, 175, 0.12) 0%, transparent 45%),
+                radial-gradient(circle at 85% 15%, rgba(155, 155, 196, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(107, 124, 155, 0.05) 0%, transparent 60%);
             pointer-events: none;
             z-index: 0;
         }
 
+        /* Subtle paper grain texture */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.01) 2px, rgba(0,0,0,.01) 4px),
+                repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0,0,0,.01) 2px, rgba(0,0,0,.01) 4px);
+            opacity: 0.4;
+            pointer-events: none;
+            z-index: 1;
+        }
+
         .container {
             position: relative;
-            z-index: 1;
+            z-index: 2;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 2rem;
-            max-width: 1200px;
+            padding: 3rem 2rem;
+            max-width: 1300px;
             margin: 0 auto;
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 3rem;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            animation: fadeInDelayed 1s ease-out 2s forwards;
+            z-index: 10;
+        }
+
+        .scroll-indicator::after {
+            content: '↓';
+            display: block;
+            font-size: 1.5rem;
+            color: var(--muted-blue);
+            opacity: 0.4;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(8px); }
         }
 
         .header {
             text-align: center;
-            margin-bottom: 4rem;
+            margin-bottom: 3rem;
             opacity: 0;
-            animation: breatheIn 1.2s ease-out forwards;
+            transform: translateY(30px);
+            animation: slideUp 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .site-title {
-            font-family: 'Crimson Pro', serif;
-            font-size: clamp(2rem, 5vw, 3.5rem);
-            font-weight: 600;
-            color: var(--deep-blue);
-            letter-spacing: 0.02em;
-            margin-bottom: 0.5rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            color: var(--slate-purple);
+            letter-spacing: 0.03em;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .site-title::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--lavender), transparent);
+            animation: expandLine 1.2s ease-out 0.6s forwards;
+        }
+
+        @keyframes expandLine {
+            to { width: 120%; }
         }
 
         .divider {
-            width: 60px;
-            height: 2px;
-            background: var(--soft-blue);
-            margin: 1.5rem auto;
+            width: 80px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--muted-blue), transparent);
+            margin: 2rem auto;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 1s forwards;
         }
 
         .photo-container {
-            width: 240px;
-            height: 240px;
-            border-radius: 4px;
+            width: 280px;
+            height: 280px;
+            border-radius: 2px;
             overflow: hidden;
-            margin: 2rem auto;
-            border: 3px solid var(--soft-blue);
-            box-shadow: 0 8px 24px rgba(91, 124, 141, 0.15);
+            margin: 3rem auto;
+            box-shadow: 
+                0 4px 20px rgba(107, 124, 155, 0.12),
+                0 12px 40px rgba(123, 156, 175, 0.15);
             opacity: 0;
-            animation: breatheIn 1.2s ease-out 0.3s forwards;
+            transform: translateY(30px) scale(0.95);
+            animation: photoReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.4s forwards;
+            position: relative;
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .photo-container::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(155, 155, 196, 0.12), transparent);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        .photo-container:hover {
+            transform: translateY(-4px) scale(1);
+        }
+
+        .photo-container:hover::before {
+            opacity: 1;
         }
 
         .photo-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .photo-container:hover img {
+            transform: scale(1.05);
+        }
+
+        @keyframes photoReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .poem-container {
             width: 100%;
-            max-width: 800px;
-            margin: 3rem auto;
-            padding: 5rem 4rem;
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(10px);
+            max-width: 900px;
+            margin: 4rem auto;
+            padding: 6rem 5rem;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(245, 245, 245, 0.7));
+            backdrop-filter: blur(20px);
             border-radius: 2px;
-            box-shadow: 0 4px 32px rgba(91, 124, 141, 0.08);
-            border-left: 3px solid var(--soft-blue);
+            box-shadow: 
+                0 2px 12px rgba(107, 124, 155, 0.08),
+                0 8px 40px rgba(123, 156, 175, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            border-left: 2px solid var(--lavender);
+            border-right: 1px solid rgba(163, 184, 201, 0.2);
             opacity: 0;
-            animation: breatheIn 1.2s ease-out 0.6s forwards;
+            transform: translateY(40px);
+            animation: containerReveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.8s forwards;
             position: relative;
-            min-height: 300px;
+            min-height: 420px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .poem-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 4px 20px rgba(107, 124, 155, 0.12),
+                0 12px 50px rgba(123, 156, 175, 0.16),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+        }
+
+        @keyframes containerReveal {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .poem-slide {
             position: absolute;
-            top: 5rem;
-            left: 4rem;
-            right: 4rem;
+            top: 6rem;
+            left: 5rem;
+            right: 5rem;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .poem-slide.active {
@@ -130,75 +253,118 @@
         }
 
         .poem-text {
-            font-family: 'Crimson Pro', serif;
-            font-size: clamp(1.1rem, 2vw, 1.35rem);
-            line-height: 1.9;
-            color: var(--charcoal);
+            font-family: 'Lora', serif;
+            font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+            line-height: 2.1;
+            color: var(--deep-purple);
             font-style: italic;
             text-align: left;
+            font-weight: 400;
+            letter-spacing: 0.01em;
         }
 
         .poem-attribution {
-            font-family: 'Work Sans', sans-serif;
-            font-size: 0.9rem;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.95rem;
             color: var(--warm-gray);
-            margin-top: 2rem;
+            margin-top: 2.5rem;
             font-style: normal;
-            font-weight: 400;
-            letter-spacing: 0.05em;
+            font-weight: 300;
+            letter-spacing: 0.08em;
+            opacity: 0.8;
         }
 
         .coming-soon {
             text-align: center;
-            margin-top: 4rem;
+            margin-top: 5rem;
             opacity: 0;
-            animation: breatheIn 1.2s ease-out 0.9s forwards;
+            transform: translateY(30px);
+            animation: slideUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
         }
 
         .coming-soon-title {
-            font-family: 'Work Sans', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 500;
-            letter-spacing: 0.15em;
+            font-family: 'Source Serif 4', serif;
+            font-size: 0.8rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            color: var(--deep-blue);
-            margin-bottom: 0.75rem;
+            color: var(--muted-blue);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .coming-soon-title::before,
+        .coming-soon-title::after {
+            content: '—';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--lavender);
+            opacity: 0.5;
+        }
+
+        .coming-soon-title::before {
+            left: -2rem;
+        }
+
+        .coming-soon-title::after {
+            right: -2rem;
         }
 
         .coming-soon-details {
-            font-family: 'Crimson Pro', serif;
-            font-size: 1.1rem;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
             color: var(--warm-gray);
-            line-height: 1.8;
+            line-height: 2;
+            font-weight: 400;
         }
 
-        @keyframes breatheIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+        @keyframes slideUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDelayed {
+            to { opacity: 1; }
+        }
+
         /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .poem-container {
+                max-width: 800px;
+                padding: 5rem 4rem;
+                min-height: 400px;
+            }
+
+            .poem-slide {
+                top: 5rem;
+                left: 4rem;
+                right: 4rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 1.5rem;
+                padding: 2rem 1.5rem;
             }
 
             .poem-container {
-                padding: 4rem 2.5rem;
-                margin: 2rem auto;
-                min-height: 320px;
+                padding: 4rem 3rem;
+                margin: 3rem auto;
+                min-height: 420px;
             }
 
             .poem-slide {
                 top: 4rem;
-                left: 2.5rem;
-                right: 2.5rem;
+                left: 3rem;
+                right: 3rem;
             }
 
             .header {
@@ -206,34 +372,47 @@
             }
 
             .coming-soon {
-                margin-top: 2.5rem;
+                margin-top: 3rem;
             }
 
             .photo-container {
-                width: 200px;
-                height: 200px;
+                width: 240px;
+                height: 240px;
+            }
+
+            .coming-soon-title::before,
+            .coming-soon-title::after {
+                display: none;
+            }
+
+            .scroll-indicator {
+                display: none;
             }
         }
 
         @media (max-width: 480px) {
             .photo-container {
-                width: 180px;
-                height: 180px;
+                width: 220px;
+                height: 220px;
             }
 
             .poem-container {
-                padding: 3rem 2rem;
-                min-height: 340px;
+                padding: 3.5rem 2rem;
+                min-height: 440px;
             }
 
             .poem-slide {
-                top: 3rem;
+                top: 3.5rem;
                 left: 2rem;
                 right: 2rem;
             }
 
-            .divider {
-                width: 40px;
+            .site-title {
+                letter-spacing: 0.02em;
+            }
+
+            .poem-text {
+                line-height: 2;
             }
         }
     </style>
@@ -316,6 +495,8 @@
         </div>
     </div>
 
+    <div class="scroll-indicator"></div>
+
     <script>
         // Cycle through poem slides
         const slides = document.querySelectorAll('.poem-slide');
@@ -327,8 +508,18 @@
             slides[currentSlide].classList.add('active');
         }
 
-        // Change poem every 5 seconds
-        setInterval(nextSlide, 5000);
+        // Change poem every 6 seconds (slightly longer for better reading)
+        setInterval(nextSlide, 6000);
+
+        // Hide scroll indicator on scroll
+        let scrolled = false;
+        window.addEventListener('scroll', function() {
+            if (!scrolled) {
+                scrolled = true;
+                document.querySelector('.scroll-indicator').style.opacity = '0';
+            }
+        });
     </script>
 </body>
+</html>
 </html>
