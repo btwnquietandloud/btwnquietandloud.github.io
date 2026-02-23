@@ -158,6 +158,58 @@
             animation: fadeUp 1s ease 0.6s forwards;
         }
 
+        /* ── Music Intro ── */
+        .music-intro {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .music-intro.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .music-intro::before {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 1px;
+            background: var(--stone);
+            margin: 0 auto 3rem;
+        }
+
+        .intro-label {
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--sea-foam);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .intro-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.4rem;
+        }
+
+        .intro-body p {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 400;
+            line-height: 1.9;
+            color: var(--ink);
+            letter-spacing: 0.01em;
+        }
+
         /* ── Track List ── */
         .track-list {
             position: relative;
@@ -165,15 +217,6 @@
             max-width: 800px;
             margin: 0 auto;
             padding: 0 2rem 4rem;
-        }
-
-        .track-list::before {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 1px;
-            background: var(--stone);
-            margin: 0 auto 3rem;
         }
 
         .track-section-label {
@@ -446,6 +489,15 @@
         <h1 class="page-title">Music</h1>
         <p class="page-subtitle">original songs inspired by the poetry</p>
     </header>
+
+    <!-- ── Intro ── -->
+    <section class="music-intro" data-reveal>
+        <p class="intro-label">Thoughts On How AI Can Expand The Creative Voice</p>
+        <div class="intro-body">
+            <p>I have been taking advantage of opportunities to leverage AI to breathe new life into my poems. Ever since the wide release of Suno, I have been adapting my poems into music, allowing my work to be expressed in ways I never dreamed possible. As Suno expanded its capabilities and I gained much more creative control over the music, I was able to create representations of my work that give it new life.</p>
+            <p>I personally love the juxtaposition of creativity fueled by machine intelligence. These songs are deeply personal, and I hope you enjoy them as much as I did making them.</p>
+        </div>
+    </section>
 
     <!-- ── Track List: From the Poems ── -->
     <section class="track-list">
