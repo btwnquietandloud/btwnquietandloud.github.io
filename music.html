@@ -627,6 +627,19 @@
         });
         entries.forEach(el => observer.observe(el));
 
+        // ── Preload durations for all tracks ──
+        document.querySelectorAll('.track-entry').forEach(entry => {
+            const src = entry.dataset.src;
+            const timeEl = entry.querySelector('.track-time');
+            const preloader = new Audio(src);
+            preloader.preload = 'metadata';
+            preloader.addEventListener('loadedmetadata', () => {
+                const m = Math.floor(preloader.duration / 60);
+                const sec = Math.floor(preloader.duration % 60);
+                timeEl.textContent = m + ':' + (sec < 10 ? '0' : '') + sec;
+            });
+        });
+
         // ── Global Audio Player ──
         let currentAudio = null;
         let currentBtn = null;
