@@ -176,13 +176,40 @@
 
     </section>
 
+    <!-- ── Reading ── -->
+    <section class="audio-section">
+        <div class="audio-container" data-reveal>
+            <p class="audio-label">Listen</p>
+            <h3 class="audio-title">Shattered Glass — The Reading</h3>
+            <p class="audio-subtitle">read aloud by the poet</p>
+            <audio id="audioReading" src="shattered-glass-reading.mp3" preload="metadata"></audio>
+            <div class="player" id="playerReading">
+                <button class="play-btn" id="playBtnReading" aria-label="Play Reading">
+                    <svg class="icon-play" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/></svg>
+                    <svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>
+                </button>
+                <div class="player-track">
+                    <div class="track-bar" id="trackBarReading">
+                        <div class="track-progress" id="trackProgressReading"></div>
+                        <div class="track-handle" id="trackHandleReading"></div>
+                    </div>
+                    <div class="track-times">
+                        <span class="time-current" id="timeCurrentReading">0:00</span>
+                        <span class="time-total" id="timeTotalReading">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Song ── -->
     <section class="audio-section">
         <div class="audio-container" data-reveal>
             <p class="audio-label">Listen</p>
             <h3 class="audio-title">Shattered Glass — The Song</h3>
             <p class="audio-subtitle">an original composition inspired by the poem</p>
             <audio id="audioPlayer" src="ShatteredGlass.mp3" preload="metadata"></audio>
-            <div class="player">
+            <div class="player" id="playerSong">
                 <button class="play-btn" id="playBtn" aria-label="Play">
                     <svg class="icon-play" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/></svg>
                     <svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>
@@ -243,22 +270,47 @@
         }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        const audio = document.getElementById('audioPlayer');
-        const playBtn = document.getElementById('playBtn');
-        const iconPlay = playBtn.querySelector('.icon-play');
-        const iconPause = playBtn.querySelector('.icon-pause');
-        const trackBar = document.getElementById('trackBar');
-        const trackProgress = document.getElementById('trackProgress');
-        const trackHandle = document.getElementById('trackHandle');
-        const timeCurrent = document.getElementById('timeCurrent');
-        const timeTotal = document.getElementById('timeTotal');
-        const player = document.querySelector('.player');
+        // ── Audio Players (only one plays at a time) ──
         function formatTime(s) { const m = Math.floor(s / 60); const sec = Math.floor(s % 60); return m + ':' + (sec < 10 ? '0' : '') + sec; }
-        audio.addEventListener('loadedmetadata', () => { timeTotal.textContent = formatTime(audio.duration); });
-        audio.addEventListener('timeupdate', () => { const pct = (audio.currentTime / audio.duration) * 100; trackProgress.style.width = pct + '%'; trackHandle.style.left = pct + '%'; timeCurrent.textContent = formatTime(audio.currentTime); });
-        audio.addEventListener('ended', () => { player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; });
-        playBtn.addEventListener('click', () => { if (audio.paused) { audio.play(); player.classList.add('playing'); iconPlay.style.display = 'none'; iconPause.style.display = ''; } else { audio.pause(); player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; } });
-        trackBar.addEventListener('click', (e) => { const rect = trackBar.getBoundingClientRect(); const pct = (e.clientX - rect.left) / rect.width; audio.currentTime = pct * audio.duration; });
+
+        function setupPlayer(audioId, btnId, barId, progressId, handleId, currentId, totalId, playerId) {
+            const audio = document.getElementById(audioId);
+            const playBtn = document.getElementById(btnId);
+            const iconPlay = playBtn.querySelector('.icon-play');
+            const iconPause = playBtn.querySelector('.icon-pause');
+            const trackBar = document.getElementById(barId);
+            const trackProgress = document.getElementById(progressId);
+            const trackHandle = document.getElementById(handleId);
+            const timeCurrent = document.getElementById(currentId);
+            const timeTotal = document.getElementById(totalId);
+            const player = document.getElementById(playerId);
+
+            audio.addEventListener('loadedmetadata', () => { timeTotal.textContent = formatTime(audio.duration); });
+            audio.addEventListener('timeupdate', () => { const pct = (audio.currentTime / audio.duration) * 100; trackProgress.style.width = pct + '%'; trackHandle.style.left = pct + '%'; timeCurrent.textContent = formatTime(audio.currentTime); });
+            audio.addEventListener('ended', () => { player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; });
+
+            playBtn.addEventListener('click', () => {
+                // Stop the other player
+                allPlayers.forEach(p => {
+                    if (p.audio !== audio && !p.audio.paused) {
+                        p.audio.pause();
+                        p.player.classList.remove('playing');
+                        p.iconPlay.style.display = '';
+                        p.iconPause.style.display = 'none';
+                    }
+                });
+                if (audio.paused) { audio.play(); player.classList.add('playing'); iconPlay.style.display = 'none'; iconPause.style.display = ''; }
+                else { audio.pause(); player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; }
+            });
+
+            trackBar.addEventListener('click', (e) => { const rect = trackBar.getBoundingClientRect(); const pct = (e.clientX - rect.left) / rect.width; audio.currentTime = pct * audio.duration; });
+
+            return { audio, player, iconPlay, iconPause };
+        }
+
+        const allPlayers = [];
+        allPlayers.push(setupPlayer('audioReading', 'playBtnReading', 'trackBarReading', 'trackProgressReading', 'trackHandleReading', 'timeCurrentReading', 'timeTotalReading', 'playerReading'));
+        allPlayers.push(setupPlayer('audioPlayer', 'playBtn', 'trackBar', 'trackProgress', 'trackHandle', 'timeCurrent', 'timeTotal', 'playerSong'));
     </script>
 
 </body>
