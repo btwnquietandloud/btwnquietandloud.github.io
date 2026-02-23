@@ -250,8 +250,8 @@
         }
 
         .photo-container {
-            width: 260px;
-            height: 260px;
+            width: 380px;
+            height: 450px;
             overflow: hidden;
             margin-bottom: 3rem;
             position: relative;
@@ -423,6 +423,71 @@
             border-color: var(--sea-foam);
         }
 
+        /* ── About Section ── */
+        .about-section {
+            position: relative;
+            z-index: 1;
+            max-width: 680px;
+            margin: 2rem auto 0;
+            padding: 5rem 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .about-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .about-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 1px;
+            background: var(--stone);
+        }
+
+        .about-label {
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--sea-foam);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .about-heading {
+            font-family: var(--font-display);
+            font-size: clamp(1.6rem, 3.5vw, 2.2rem);
+            font-weight: 300;
+            font-style: italic;
+            color: var(--sea-deep);
+            text-align: center;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.01em;
+        }
+
+        .about-body {
+            display: flex;
+            flex-direction: column;
+            gap: 1.6rem;
+        }
+
+        .about-body p {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 400;
+            line-height: 1.9;
+            color: var(--ink);
+            letter-spacing: 0.01em;
+        }
+
         /* ── Site Footer (shared with piece pages) ── */
         .site-footer {
             position: relative;
@@ -491,8 +556,8 @@
             }
 
             .photo-container {
-                width: 220px;
-                height: 220px;
+                width: 320px;
+                height: 400px;
             }
 
             .quote-container {
@@ -522,8 +587,8 @@
             }
 
             .photo-container {
-                width: 200px;
-                height: 200px;
+                width: 280px;
+                height: 350px;
             }
 
             .quote-container {
@@ -548,8 +613,7 @@
         <a href="/" class="site-name">Between Quiet and Loud</a>
         <ul class="nav-links">
             <li><a href="#" class="active">Work</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
+            <li><a href="#about">About</a></li>
         </ul>
     </nav>
 
@@ -628,6 +692,18 @@
             </div>
         </div>
 
+    </section>
+
+    <!-- ── About ── -->
+    <section class="about-section" id="about" data-reveal>
+        <p class="about-label">About</p>
+        <h2 class="about-heading">A life lived between extremes</h2>
+        <div class="about-body">
+            <p>Between Quiet and Loud is a multimedia poetry collection spanning three decades of embodied experience—from the raw intensity of college years through marriage, motherhood, dissolution, and rekindling. These poems live in the body: in breath and flesh, heartbeats and fingertips, the sensation of being held and the ache of letting go.</p>
+            <p>My work refuses to look away from desire, loss, or transformation. I write about love as both sanctuary and consumption, about bodies that desire and nurture, about moments that shatter stars and others that simply breathe. Each poem is anchored in physical truth—the damp, the sting, the soothing—because I believe the body remembers what the mind tries to forget.</p>
+            <p>This collection chronicles a life lived between extremes: the loud years of addiction and passion, the quiet of motherhood and acceptance, and the renewed aliveness that comes from choosing desire with eyes wide open. The poems span from 2002 to 2025, tracing not just my evolution as a poet but as a person learning to hold joy and grief in the same hand.</p>
+            <p>Through audio recordings, photography, music, and story, I invite you into the full sensory experience of these poems—to hear them breathed aloud, to see the moments that inspired them, to understand the context that shaped each word. This is poetry that asks to be felt, not just read.</p>
+        </div>
     </section>
 
     <!-- ── Coming Soon ── -->
