@@ -553,6 +553,42 @@
             letter-spacing: 0.01em;
         }
 
+        /* ── Suno CTA ── */
+        .suno-cta {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem 2rem 0;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .suno-cta.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .suno-cta p {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 300;
+            font-style: italic;
+            color: var(--mist);
+        }
+
+        .suno-cta a {
+            color: var(--sea-foam);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .suno-cta a:hover {
+            color: var(--ink);
+            border-color: var(--ink);
+        }
+
         /* ── Site Footer (shared with piece pages) ── */
         .site-footer {
             position: relative;
@@ -678,6 +714,7 @@
         <a href="/" class="site-name">Between Quiet and Loud</a>
         <ul class="nav-links">
             <li><a href="work.html" class="active">Work</a></li>
+            <li><a href="music.html">Music</a></li>
             <li><a href="#about">About</a></li>
         </ul>
     </nav>
@@ -788,6 +825,11 @@
             <span class="category-pill">Story</span>
         </div>
     </section>
+
+    <!-- ── Suno CTA ── -->
+    <div class="suno-cta" data-reveal>
+        <p>Want to hear more? <a href="https://suno.com/@wardenotn" target="_blank" rel="noopener">Check me out on Suno</a></p>
+    </div>
 
     <!-- ── Footer ── -->
     <footer class="site-footer">
