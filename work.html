@@ -164,6 +164,72 @@
             animation: fadeUp 1s ease 0.6s forwards;
         }
 
+        /* ── Sort Controls ── */
+        .sort-controls {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .sort-controls::before {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 1px;
+            background: var(--stone);
+            margin: 0 auto 0 0;
+            position: absolute;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .sort-label {
+            font-family: var(--font-body);
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--mist);
+            flex-shrink: 0;
+        }
+
+        .sort-btn {
+            font-family: var(--font-body);
+            font-size: 0.65rem;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--mist);
+            background: none;
+            border: 1px solid var(--stone);
+            padding: 0.4rem 1rem;
+            cursor: pointer;
+            transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+        }
+
+        .sort-btn:hover {
+            color: var(--sea-foam);
+            border-color: var(--sea-foam);
+        }
+
+        .sort-btn.active {
+            color: var(--sand);
+            background: var(--sea-foam);
+            border-color: var(--sea-foam);
+        }
+
+        .sort-direction {
+            display: inline-block;
+            margin-left: 0.3rem;
+            font-size: 0.55rem;
+        }
+
         /* ── Poem List ── */
         .poem-list {
             position: relative;
@@ -417,10 +483,18 @@
         <p class="page-subtitle">poems spanning 2002–2025</p>
     </header>
 
-    <!-- ── Poem List ── -->
-    <section class="poem-list">
+    <!-- ── Sort Controls ── -->
+    <div class="sort-controls">
+        <span class="sort-label">Sort by</span>
+        <button class="sort-btn active" id="sortDefault" data-sort="default">Added<span class="sort-direction">↓</span></button>
+        <button class="sort-btn" id="sortYear" data-sort="year">Year<span class="sort-direction"></span></button>
+        <button class="sort-btn" id="sortAlpha" data-sort="alpha">A–Z<span class="sort-direction"></span></button>
+    </div>
 
-        <a href="my-tidal-wave.html" class="poem-entry" data-reveal>
+    <!-- ── Poem List ── -->
+    <section class="poem-list" id="poemList">
+
+        <a href="my-tidal-wave.html" class="poem-entry" data-reveal data-title="My Tidal Wave" data-year="2005" data-order="1">
             <span class="poem-number">01</span>
             <div class="poem-info">
                 <h2 class="poem-title">My Tidal Wave</h2>
@@ -432,7 +506,7 @@
             <span class="poem-arrow">Read →</span>
         </a>
 
-        <a href="sanctuary.html" class="poem-entry" data-reveal>
+        <a href="sanctuary.html" class="poem-entry" data-reveal data-title="Sanctuary" data-year="2016" data-order="2">
             <span class="poem-number">02</span>
             <div class="poem-info">
                 <h2 class="poem-title">Sanctuary</h2>
@@ -444,7 +518,7 @@
             <span class="poem-arrow">Read →</span>
         </a>
 
-        <a href="only-eden.html" class="poem-entry" data-reveal>
+        <a href="only-eden.html" class="poem-entry" data-reveal data-title="Only Eden" data-year="2002" data-order="3">
             <span class="poem-number">03</span>
             <div class="poem-info">
                 <h2 class="poem-title">Only Eden</h2>
@@ -456,7 +530,7 @@
             <span class="poem-arrow">Read →</span>
         </a>
 
-        <a href="in-and-out.html" class="poem-entry" data-reveal>
+        <a href="in-and-out.html" class="poem-entry" data-reveal data-title="In and Out" data-year="2003" data-order="4">
             <span class="poem-number">04</span>
             <div class="poem-info">
                 <h2 class="poem-title">In and Out</h2>
@@ -468,7 +542,7 @@
             <span class="poem-arrow">Read →</span>
         </a>
 
-        <a href="vines.html" class="poem-entry" data-reveal>
+        <a href="vines.html" class="poem-entry" data-reveal data-title="Vines" data-year="2023" data-order="5">
             <span class="poem-number">05</span>
             <div class="poem-info">
                 <h2 class="poem-title">Vines</h2>
@@ -480,7 +554,7 @@
             <span class="poem-arrow">Read →</span>
         </a>
 
-        <a href="unk.html" class="poem-entry" data-reveal>
+        <a href="unk.html" class="poem-entry" data-reveal data-title="Unk" data-year="2007" data-order="6">
             <span class="poem-number">06</span>
             <div class="poem-info">
                 <h2 class="poem-title">Unk</h2>
@@ -492,7 +566,7 @@
             <span class="poem-arrow">Read →</span>
         </a>
 
-        <a href="memory-of-him.html" class="poem-entry" data-reveal>
+        <a href="memory-of-him.html" class="poem-entry" data-reveal data-title="Memory of Him" data-year="2025" data-order="7">
             <span class="poem-number">07</span>
             <div class="poem-info">
                 <h2 class="poem-title">Memory of Him</h2>
@@ -504,7 +578,7 @@
             <span class="poem-arrow">Read →</span>
         </a>
 
-        <a href="negative-space.html" class="poem-entry" data-reveal>
+        <a href="negative-space.html" class="poem-entry" data-reveal data-title="Negative Space" data-year="2002" data-order="8">
             <span class="poem-number">08</span>
             <div class="poem-info">
                 <h2 class="poem-title">Negative Space</h2>
@@ -553,22 +627,97 @@
         });
 
         // ── Scroll reveal ──
-        const entries = document.querySelectorAll('[data-reveal]');
-        const observer = new IntersectionObserver((items) => {
-            items.forEach((item, i) => {
-                if (item.isIntersecting) {
-                    setTimeout(() => {
+        function initReveal() {
+            const entries = document.querySelectorAll('[data-reveal]');
+            const observer = new IntersectionObserver((items) => {
+                items.forEach((item) => {
+                    if (item.isIntersecting) {
                         item.target.classList.add('visible');
-                    }, 100 * [...entries].indexOf(item.target));
-                    observer.unobserve(item.target);
-                }
-            });
-        }, {
-            threshold: 0.1,
-            rootMargin: '0px 0px -30px 0px'
-        });
+                        observer.unobserve(item.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -30px 0px' });
+            entries.forEach(el => observer.observe(el));
+        }
+        initReveal();
 
-        entries.forEach(el => observer.observe(el));
+        // ── Sorting ──
+        const poemList = document.getElementById('poemList');
+        const sortBtns = document.querySelectorAll('.sort-btn');
+        let currentSort = 'default';
+        let currentDirection = 'asc'; // asc for default order
+
+        function renumber() {
+            const entries = poemList.querySelectorAll('.poem-entry');
+            entries.forEach((entry, i) => {
+                const num = String(i + 1).padStart(2, '0');
+                entry.querySelector('.poem-number').textContent = num;
+            });
+        }
+
+        function sortEntries(type, direction) {
+            const entries = [...poemList.querySelectorAll('.poem-entry')];
+
+            entries.sort((a, b) => {
+                let valA, valB;
+                if (type === 'default') {
+                    valA = parseInt(a.dataset.order);
+                    valB = parseInt(b.dataset.order);
+                } else if (type === 'year') {
+                    valA = parseInt(a.dataset.year);
+                    valB = parseInt(b.dataset.year);
+                    // Secondary sort by title for same year
+                    if (valA === valB) {
+                        return a.dataset.title.localeCompare(b.dataset.title) * (direction === 'asc' ? 1 : -1);
+                    }
+                } else if (type === 'alpha') {
+                    valA = a.dataset.title.toLowerCase();
+                    valB = b.dataset.title.toLowerCase();
+                    return valA.localeCompare(valB) * (direction === 'asc' ? 1 : -1);
+                }
+
+                return (valA - valB) * (direction === 'asc' ? 1 : -1);
+            });
+
+            // Re-append in new order
+            entries.forEach(entry => {
+                entry.classList.remove('visible');
+                poemList.appendChild(entry);
+            });
+
+            renumber();
+
+            // Re-trigger reveal with stagger
+            setTimeout(() => {
+                entries.forEach((entry, i) => {
+                    setTimeout(() => entry.classList.add('visible'), 60 * i);
+                });
+            }, 50);
+        }
+
+        sortBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const type = btn.dataset.sort;
+
+                // Toggle direction if clicking same button
+                if (type === currentSort) {
+                    currentDirection = currentDirection === 'asc' ? 'desc' : 'asc';
+                } else {
+                    currentSort = type;
+                    currentDirection = 'asc';
+                }
+
+                // Update button states
+                sortBtns.forEach(b => {
+                    b.classList.remove('active');
+                    b.querySelector('.sort-direction').textContent = '';
+                });
+                btn.classList.add('active');
+                btn.querySelector('.sort-direction').textContent = currentDirection === 'asc' ? '↓' : '↑';
+
+                sortEntries(currentSort, currentDirection);
+            });
+        });
     </script>
 
 </body>
