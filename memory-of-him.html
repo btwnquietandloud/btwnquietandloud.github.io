@@ -241,6 +241,51 @@
             color: var(--sea-deep);
         }
 
+        /* ── Commentary Section ── */
+        .commentary-section {
+            position: relative;
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 2rem 6rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .commentary-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .commentary-section::before {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 1px;
+            background: var(--stone);
+            margin: 0 auto 3rem;
+        }
+
+        .commentary-label {
+            font-family: var(--font-body);
+            font-size: 0.7rem;
+            font-weight: 500;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: var(--sea-foam);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .commentary-body {
+            font-family: var(--font-display);
+            font-size: 1.1rem;
+            font-weight: 400;
+            line-height: 1.9;
+            color: var(--ink);
+            letter-spacing: 0.01em;
+        }
+
         /* ── Audio Section ── */
         .audio-section {
             position: relative;
@@ -566,6 +611,10 @@
                 padding: 2.5rem 2rem;
             }
 
+            .commentary-section {
+                padding: 0 1.5rem 4rem;
+            }
+
             .poem-meta {
                 padding: 0 1.5rem 4rem;
                 flex-direction: column;
@@ -679,31 +728,58 @@
 
     </section>
 
-    <!-- ── Audio ── -->
+    <!-- ── Commentary ── -->
+    <section class="commentary-section" data-reveal>
+        <p class="commentary-label">About the Songs</p>
+        <p class="commentary-body">This piece elicits a lot of different emotions in me. I adapted this poem into two very different songs. Memory of Him focuses on the visceral experience of remembering my father as a child, and coupling that mentally with what I know of him as an adult. Tough is focused more on the emotional constitution required to navigate the complex layers of memory that build over the years.</p>
+    </section>
+
+    <!-- ── Song 1: Memory of Him ── -->
     <section class="audio-section">
         <div class="audio-container" data-reveal>
             <p class="audio-label">Listen</p>
             <h3 class="audio-title">Memory of Him — The Song</h3>
             <p class="audio-subtitle">an original composition inspired by the poem</p>
-            <audio id="audioPlayer" src="memoryofhim.mp3" preload="metadata"></audio>
-            <div class="player">
-                <button class="play-btn" id="playBtn" aria-label="Play">
-                    <svg class="icon-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/>
-                    </svg>
-                    <svg class="icon-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="display:none">
-                        <rect x="6" y="4" width="4" height="16" fill="currentColor" stroke="none"/>
-                        <rect x="14" y="4" width="4" height="16" fill="currentColor" stroke="none"/>
-                    </svg>
+            <audio id="audioSong1" src="memoryofhim.mp3" preload="metadata"></audio>
+            <div class="player" id="playerSong1">
+                <button class="play-btn" id="playBtnSong1" aria-label="Play Memory of Him">
+                    <svg class="icon-play" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/></svg>
+                    <svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>
                 </button>
                 <div class="player-track">
-                    <div class="track-bar" id="trackBar">
-                        <div class="track-progress" id="trackProgress"></div>
-                        <div class="track-handle" id="trackHandle"></div>
+                    <div class="track-bar" id="trackBarSong1">
+                        <div class="track-progress" id="trackProgressSong1"></div>
+                        <div class="track-handle" id="trackHandleSong1"></div>
                     </div>
                     <div class="track-times">
-                        <span class="time-current" id="timeCurrent">0:00</span>
-                        <span class="time-total" id="timeTotal">0:00</span>
+                        <span class="time-current" id="timeCurrentSong1">0:00</span>
+                        <span class="time-total" id="timeTotalSong1">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Song 2: Tough ── -->
+    <section class="audio-section">
+        <div class="audio-container" data-reveal>
+            <p class="audio-label">Listen</p>
+            <h3 class="audio-title">Tough</h3>
+            <p class="audio-subtitle">a second adaptation of the poem</p>
+            <audio id="audioSong2" src="Tough.mp3" preload="metadata"></audio>
+            <div class="player" id="playerSong2">
+                <button class="play-btn" id="playBtnSong2" aria-label="Play Tough">
+                    <svg class="icon-play" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/></svg>
+                    <svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>
+                </button>
+                <div class="player-track">
+                    <div class="track-bar" id="trackBarSong2">
+                        <div class="track-progress" id="trackProgressSong2"></div>
+                        <div class="track-handle" id="trackHandleSong2"></div>
+                    </div>
+                    <div class="track-times">
+                        <span class="time-current" id="timeCurrentSong2">0:00</span>
+                        <span class="time-total" id="timeTotalSong2">0:00</span>
                     </div>
                 </div>
             </div>
@@ -762,7 +838,7 @@
 
         stanzas.forEach(s => observer.observe(s));
 
-        // ── Scroll reveal for audio section ──
+        // ── Scroll reveal for audio + commentary sections ──
         const revealElements = document.querySelectorAll('[data-reveal]');
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -777,60 +853,47 @@
         });
         revealElements.forEach(el => revealObserver.observe(el));
 
-        // ── Audio Player ──
-        const audio = document.getElementById('audioPlayer');
-        const playBtn = document.getElementById('playBtn');
-        const iconPlay = playBtn.querySelector('.icon-play');
-        const iconPause = playBtn.querySelector('.icon-pause');
-        const trackBar = document.getElementById('trackBar');
-        const trackProgress = document.getElementById('trackProgress');
-        const trackHandle = document.getElementById('trackHandle');
-        const timeCurrent = document.getElementById('timeCurrent');
-        const timeTotal = document.getElementById('timeTotal');
-        const player = document.querySelector('.player');
+        // ── Audio Players (only one plays at a time) ──
+        function formatTime(s) { const m = Math.floor(s / 60); const sec = Math.floor(s % 60); return m + ':' + (sec < 10 ? '0' : '') + sec; }
 
-        function formatTime(s) {
-            const m = Math.floor(s / 60);
-            const sec = Math.floor(s % 60);
-            return m + ':' + (sec < 10 ? '0' : '') + sec;
+        function setupPlayer(audioId, btnId, barId, progressId, handleId, currentId, totalId, playerId) {
+            const audio = document.getElementById(audioId);
+            const playBtn = document.getElementById(btnId);
+            const iconPlay = playBtn.querySelector('.icon-play');
+            const iconPause = playBtn.querySelector('.icon-pause');
+            const trackBar = document.getElementById(barId);
+            const trackProgress = document.getElementById(progressId);
+            const trackHandle = document.getElementById(handleId);
+            const timeCurrent = document.getElementById(currentId);
+            const timeTotal = document.getElementById(totalId);
+            const player = document.getElementById(playerId);
+
+            audio.addEventListener('loadedmetadata', () => { timeTotal.textContent = formatTime(audio.duration); });
+            audio.addEventListener('timeupdate', () => { const pct = (audio.currentTime / audio.duration) * 100; trackProgress.style.width = pct + '%'; trackHandle.style.left = pct + '%'; timeCurrent.textContent = formatTime(audio.currentTime); });
+            audio.addEventListener('ended', () => { player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; });
+
+            playBtn.addEventListener('click', () => {
+                // Stop the other player
+                allPlayers.forEach(p => {
+                    if (p.audio !== audio && !p.audio.paused) {
+                        p.audio.pause();
+                        p.player.classList.remove('playing');
+                        p.iconPlay.style.display = '';
+                        p.iconPause.style.display = 'none';
+                    }
+                });
+                if (audio.paused) { audio.play(); player.classList.add('playing'); iconPlay.style.display = 'none'; iconPause.style.display = ''; }
+                else { audio.pause(); player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; }
+            });
+
+            trackBar.addEventListener('click', (e) => { const rect = trackBar.getBoundingClientRect(); const pct = (e.clientX - rect.left) / rect.width; audio.currentTime = pct * audio.duration; });
+
+            return { audio, player, iconPlay, iconPause };
         }
 
-        audio.addEventListener('loadedmetadata', () => {
-            timeTotal.textContent = formatTime(audio.duration);
-        });
-
-        audio.addEventListener('timeupdate', () => {
-            const pct = (audio.currentTime / audio.duration) * 100;
-            trackProgress.style.width = pct + '%';
-            trackHandle.style.left = pct + '%';
-            timeCurrent.textContent = formatTime(audio.currentTime);
-        });
-
-        audio.addEventListener('ended', () => {
-            player.classList.remove('playing');
-            iconPlay.style.display = '';
-            iconPause.style.display = 'none';
-        });
-
-        playBtn.addEventListener('click', () => {
-            if (audio.paused) {
-                audio.play();
-                player.classList.add('playing');
-                iconPlay.style.display = 'none';
-                iconPause.style.display = '';
-            } else {
-                audio.pause();
-                player.classList.remove('playing');
-                iconPlay.style.display = '';
-                iconPause.style.display = 'none';
-            }
-        });
-
-        trackBar.addEventListener('click', (e) => {
-            const rect = trackBar.getBoundingClientRect();
-            const pct = (e.clientX - rect.left) / rect.width;
-            audio.currentTime = pct * audio.duration;
-        });
+        const allPlayers = [];
+        allPlayers.push(setupPlayer('audioSong1', 'playBtnSong1', 'trackBarSong1', 'trackProgressSong1', 'trackHandleSong1', 'timeCurrentSong1', 'timeTotalSong1', 'playerSong1'));
+        allPlayers.push(setupPlayer('audioSong2', 'playBtnSong2', 'trackBarSong2', 'trackProgressSong2', 'trackHandleSong2', 'timeCurrentSong2', 'timeTotalSong2', 'playerSong2'));
     </script>
 
 </body>
