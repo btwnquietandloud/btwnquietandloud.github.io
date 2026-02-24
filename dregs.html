@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dregs — Between Quiet and Loud</title>
+    <link rel="icon" type="image/png" href="faviconnew.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root { --ink: #1a1a1e; --sand: #f4f0ea; --stone: #d6cfc4; --mist: #a69e91; --sea-deep: #2c3e50; --sea-foam: #7ba5a5; --sea-glass: #a8c5c0; --accent: #c9a96e; --font-display: 'Cormorant Garamond', Georgia, serif; --font-body: 'Karla', 'Helvetica Neue', sans-serif; }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { background-color: var(--sand); color: var(--ink); font-family: var(--font-body); min-height: 100vh; overflow-x: hidden; }
+
+        .site-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1.5rem 3rem; display: flex; justify-content: space-between; align-items: center; transition: background 0.4s ease, box-shadow 0.4s ease; }
+        .site-nav.scrolled { background: rgba(244, 240, 234, 0.92); backdrop-filter: blur(12px); box-shadow: 0 1px 0 rgba(0,0,0,0.06); }
+        .site-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 400; letter-spacing: 0.08em; color: var(--ink); text-decoration: none; text-transform: lowercase; font-style: italic; }
+        .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+        .nav-links a { font-family: var(--font-body); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mist); text-decoration: none; transition: color 0.3s ease; }
+        .nav-links a:hover, .nav-links a.active { color: var(--ink); }
+
+        .hero { position: relative; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 6rem 2rem 4rem; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 80%, rgba(123, 165, 165, 0.12) 0%, transparent 70%), radial-gradient(ellipse 60% 40% at 30% 20%, rgba(201, 169, 110, 0.06) 0%, transparent 60%); pointer-events: none; }
+        .category-tag { font-family: var(--font-body); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sea-foam); margin-bottom: 2rem; opacity: 0; animation: fadeUp 1s ease 0.3s forwards; }
+        .hero-title { font-family: var(--font-display); font-size: clamp(3rem, 8vw, 6.5rem); font-weight: 300; line-height: 1.05; letter-spacing: -0.02em; color: var(--ink); margin-bottom: 1.5rem; opacity: 0; animation: fadeUp 1s ease 0.5s forwards; }
+        .hero-subtitle { font-family: var(--font-display); font-size: 1.15rem; font-weight: 300; font-style: italic; color: var(--mist); letter-spacing: 0.02em; opacity: 0; animation: fadeUp 1s ease 0.7s forwards; }
+        .scroll-cue { position: absolute; bottom: 2.5rem; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 0.5rem; opacity: 0; animation: fadeUp 1s ease 1.2s forwards; }
+        .scroll-cue span { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mist); }
+        .scroll-line { width: 1px; height: 40px; background: var(--stone); position: relative; overflow: hidden; }
+        .scroll-line::after { content: ''; position: absolute; top: -100%; left: 0; width: 100%; height: 100%; background: var(--sea-foam); animation: scrollPulse 2s ease-in-out infinite; }
+
+        .poem-section { position: relative; max-width: 720px; margin: 0 auto; padding: 6rem 2rem 8rem; }
+        .poem-section::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 60px; height: 1px; background: var(--stone); }
+        .stanza { margin-bottom: 2.8rem; opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .stanza.visible { opacity: 1; transform: translateY(0); }
+        .poem-line { font-family: var(--font-display); font-size: clamp(1.15rem, 2.5vw, 1.4rem); font-weight: 400; line-height: 1.85; color: var(--ink); letter-spacing: 0.01em; }
+        .stanza:last-of-type .poem-line { color: var(--sea-deep); }
+
+        .audio-section { position: relative; max-width: 720px; margin: 0 auto; padding: 0 2rem 6rem; }
+        .audio-container { background: linear-gradient(135deg, rgba(255,255,255,0.5), rgba(244,240,234,0.3)); border: 1px solid var(--stone); padding: 3rem; text-align: center; opacity: 0; transform: translateY(20px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .audio-container.visible { opacity: 1; transform: translateY(0); }
+        .audio-label { font-family: var(--font-body); font-size: 0.7rem; font-weight: 500; letter-spacing: 0.25em; text-transform: uppercase; color: var(--sea-foam); margin-bottom: 1rem; }
+        .audio-title { font-family: var(--font-display); font-size: clamp(1.4rem, 3vw, 1.8rem); font-weight: 400; color: var(--ink); margin-bottom: 0.4rem; }
+        .audio-subtitle { font-family: var(--font-display); font-size: 0.95rem; font-weight: 300; font-style: italic; color: var(--mist); margin-bottom: 2.5rem; }
+        .player { display: flex; align-items: center; gap: 1.5rem; max-width: 480px; margin: 0 auto; }
+        .play-btn { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--sea-foam); background: transparent; color: var(--sea-foam); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.3s ease, color 0.3s ease; }
+        .play-btn:hover { background: var(--sea-foam); color: var(--sand); }
+        .play-btn svg { width: 18px; height: 18px; }
+        .icon-play { margin-left: 2px; }
+        .player-track { flex: 1; display: flex; flex-direction: column; gap: 0.5rem; }
+        .track-bar { position: relative; height: 4px; background: var(--stone); cursor: pointer; border-radius: 2px; }
+        .track-progress { position: absolute; top: 0; left: 0; height: 100%; background: var(--sea-foam); border-radius: 2px; width: 0%; transition: width 0.1s linear; }
+        .track-handle { position: absolute; top: 50%; left: 0%; transform: translate(-50%, -50%); width: 12px; height: 12px; border-radius: 50%; background: var(--sea-foam); opacity: 0; transition: opacity 0.2s ease; pointer-events: none; }
+        .track-bar:hover .track-handle, .player.playing .track-handle { opacity: 1; }
+        .track-times { display: flex; justify-content: space-between; }
+        .track-times span { font-family: var(--font-body); font-size: 0.65rem; font-weight: 500; letter-spacing: 0.08em; color: var(--mist); }
+
+        .poem-meta { max-width: 720px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; justify-content: space-between; align-items: flex-end; border-top: 1px solid var(--stone); padding-top: 2.5rem; }
+        .meta-left { display: flex; flex-direction: column; gap: 0.3rem; }
+        .meta-label { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.2em; text-transform: uppercase; color: var(--mist); }
+        .meta-value { font-family: var(--font-display); font-size: 1rem; font-weight: 400; color: var(--ink); }
+        .piece-number { font-family: var(--font-display); font-size: 3.5rem; font-weight: 300; color: var(--stone); line-height: 1; }
+
+        .piece-nav { max-width: 720px; margin: 0 auto; padding: 0 2rem 6rem; display: flex; justify-content: space-between; align-items: center; }
+        .piece-nav a { font-family: var(--font-body); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--mist); text-decoration: none; display: flex; align-items: center; gap: 0.75rem; transition: color 0.3s ease; }
+        .piece-nav a:hover { color: var(--ink); }
+        .piece-nav .arrow { display: inline-block; width: 30px; height: 1px; background: currentColor; position: relative; transition: width 0.3s ease; }
+        .piece-nav a:hover .arrow { width: 45px; }
+        .piece-nav .arrow::after { content: ''; position: absolute; top: -3px; width: 7px; height: 7px; border: 1px solid currentColor; border-left: none; border-bottom: none; }
+        .piece-nav .prev .arrow::after { left: 0; transform: rotate(-135deg); }
+        .piece-nav .next .arrow::after { right: 0; transform: rotate(45deg); }
+
+        .site-footer { padding: 3rem; text-align: center; border-top: 1px solid var(--stone); }
+        .footer-name { font-family: var(--font-display); font-size: 1rem; font-weight: 400; font-style: italic; color: var(--mist); letter-spacing: 0.05em; }
+        .footer-copy { font-family: var(--font-body); font-size: 0.7rem; color: var(--stone); margin-top: 0.5rem; letter-spacing: 0.05em; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes scrollPulse { 0% { top: -100%; } 50% { top: 100%; } 100% { top: 100%; } }
+
+        @media (max-width: 768px) {
+            .site-nav { padding: 1.25rem 1.5rem; } .nav-links { gap: 1.5rem; } .nav-links a { font-size: 0.65rem; }
+            .hero { padding: 5rem 1.5rem 4rem; } .poem-section { padding: 4rem 1.5rem 6rem; }
+            .audio-section { padding: 0 1.5rem 4rem; } .audio-container { padding: 2.5rem 2rem; }
+            .poem-meta { padding: 0 1.5rem 4rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+            .piece-nav { padding: 0 1.5rem 4rem; } .piece-number { font-size: 2.5rem; }
+        }
+        @media (max-width: 480px) { .nav-links { gap: 1rem; } .hero-title { font-size: 2.5rem; } }
+    </style>
+</head>
+<body>
+
+    <nav class="site-nav" id="siteNav">
+        <a href="index.html" class="site-name">Between Quiet and Loud</a>
+        <ul class="nav-links">
+            <li><a href="work.html" class="active">Work</a></li>
+            <li><a href="music.html">Music</a></li>
+            <li><a href="index.html#about">About</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <p class="category-tag">Song</p>
+        <h1 class="hero-title">Dregs</h1>
+        <p class="hero-subtitle">written in 2025</p>
+        <div class="scroll-cue">
+            <span>Read</span>
+            <div class="scroll-line"></div>
+        </div>
+    </header>
+
+    <section class="poem-section">
+
+        <div class="stanza">
+            <p class="poem-line">With my hips</p>
+            <p class="poem-line">and my legs</p>
+            <p class="poem-line">around your neck</p>
+            <p class="poem-line">my body stands ready</p>
+            <p class="poem-line">to shake and connect but</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">Dregs are what</p>
+            <p class="poem-line">you give me</p>
+            <p class="poem-line">as lips turn to frown</p>
+            <p class="poem-line">and emptiness fills me</p>
+            <p class="poem-line">as you let me down.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I don't take dregs</p>
+            <p class="poem-line">Motherfucker-</p>
+            <p class="poem-line">cuz I'm the keg.</p>
+            <p class="poem-line">Come fill me up!</p>
+            <p class="poem-line">Don't let me drag.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I'll sparkle and</p>
+            <p class="poem-line">shimmer and</p>
+            <p class="poem-line">hustle all night.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I thought you</p>
+            <p class="poem-line">could thrill me</p>
+            <p class="poem-line">but it wasn't</p>
+            <p class="poem-line">worth the fight.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I don't shatter</p>
+            <p class="poem-line">to pieces of</p>
+            <p class="poem-line">glitter and fuck,</p>
+            <p class="poem-line">but maybe you'll find</p>
+            <p class="poem-line">that you're in luck.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">And I'll play Juliet</p>
+            <p class="poem-line">to your Romeo</p>
+            <p class="poem-line">but just one</p>
+            <p class="poem-line">night is</p>
+            <p class="poem-line">our whole show</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">cuz all you got</p>
+            <p class="poem-line">to offer me is dregs,</p>
+            <p class="poem-line">Occasional kisses</p>
+            <p class="poem-line">while I spread my legs.</p>
+            <p class="poem-line">Dregs.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I don't take dregs</p>
+            <p class="poem-line">Motherfucker-</p>
+            <p class="poem-line">cuz I'm the keg.</p>
+            <p class="poem-line">Come fill me up!</p>
+            <p class="poem-line">Don't let me drag.</p>
+            <p class="poem-line">I'll play Juliet</p>
+            <p class="poem-line">to your Romeo</p>
+            <p class="poem-line">but just one</p>
+            <p class="poem-line">night is</p>
+            <p class="poem-line">our whole show</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I don't take dregs</p>
+            <p class="poem-line">Motherfucker-</p>
+            <p class="poem-line">cuz I'm the keg.</p>
+            <p class="poem-line">Come fill me up!</p>
+            <p class="poem-line">Don't let me drag.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">Cuz all you got</p>
+            <p class="poem-line">to offer me is dregs.</p>
+            <p class="poem-line">Occasional kisses</p>
+            <p class="poem-line">while I spread my legs.</p>
+            <p class="poem-line">Dregs.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I don't take dregs.</p>
+            <p class="poem-line">I don't take dregs!</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">With my hips</p>
+            <p class="poem-line">and my legs</p>
+            <p class="poem-line">around your neck</p>
+            <p class="poem-line">my body stands ready</p>
+            <p class="poem-line">to shake and connect but</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">Dregs are what</p>
+            <p class="poem-line">you give me</p>
+            <p class="poem-line">as lips turn to frown</p>
+            <p class="poem-line">and emptiness fills me</p>
+            <p class="poem-line">as you let me down.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I don't take dregs</p>
+            <p class="poem-line">Motherfucker-</p>
+            <p class="poem-line">cuz I'm the keg.</p>
+            <p class="poem-line">Come fill me up!</p>
+            <p class="poem-line">Don't let me drag.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I'll sparkle and</p>
+            <p class="poem-line">shimmer and</p>
+            <p class="poem-line">hustle all night.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I thought you</p>
+            <p class="poem-line">could thrill me</p>
+            <p class="poem-line">but it wasn't</p>
+            <p class="poem-line">worth the fight.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">I don't shatter</p>
+            <p class="poem-line">to pieces of</p>
+            <p class="poem-line">glitter and fuck,</p>
+            <p class="poem-line">but maybe you'll find</p>
+            <p class="poem-line">that you're in luck.</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">And I'll play Juliet</p>
+            <p class="poem-line">to your Romeo</p>
+            <p class="poem-line">but just one</p>
+            <p class="poem-line">night is</p>
+            <p class="poem-line">our whole show</p>
+        </div>
+
+        <div class="stanza">
+            <p class="poem-line">cuz all you got</p>
+            <p class="poem-line">to offer me is dregs,</p>
+            <p class="poem-line">Occasional kisses</p>
+            <p class="poem-line">while I spread my legs.</p>
+            <p class="poem-line">Dregs.</p>
+        </div>
+
+    </section>
+
+    <!-- ── Song ── -->
+    <section class="audio-section">
+        <div class="audio-container" data-reveal>
+            <p class="audio-label">Listen</p>
+            <h3 class="audio-title">Dregs — The Song</h3>
+            <p class="audio-subtitle">the song</p>
+            <audio id="audioPlayer" src="Dregs.mp3" preload="metadata"></audio>
+            <div class="player" id="playerSong">
+                <button class="play-btn" id="playBtn" aria-label="Play">
+                    <svg class="icon-play" viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21" fill="currentColor" stroke="none"/></svg>
+                    <svg class="icon-pause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/></svg>
+                </button>
+                <div class="player-track">
+                    <div class="track-bar" id="trackBar">
+                        <div class="track-progress" id="trackProgress"></div>
+                        <div class="track-handle" id="trackHandle"></div>
+                    </div>
+                    <div class="track-times">
+                        <span class="time-current" id="timeCurrent">0:00</span>
+                        <span class="time-total" id="timeTotal">0:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="poem-meta">
+        <div class="meta-left">
+            <span class="meta-label">Collection</span>
+            <span class="meta-value">Between Quiet and Loud</span>
+        </div>
+        <span class="piece-number">14</span>
+    </div>
+
+    <nav class="piece-nav">
+        <a href="work.html" class="prev">
+            <span class="arrow"></span>
+            All Work
+        </a>
+        <a href="how-much-silence.html" class="next">
+            Previous Piece
+            <span class="arrow"></span>
+        </a>
+        <a href="you.html" class="next">
+            Next Piece
+            <span class="arrow"></span>
+        </a>
+    </nav>
+
+    <footer class="site-footer">
+        <p class="footer-name">Between Quiet and Loud</p>
+        <p class="footer-copy">&copy; 2026 Stacy Del Gallo. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const nav = document.getElementById('siteNav');
+        window.addEventListener('scroll', () => { nav.classList.toggle('scrolled', window.scrollY > 60); });
+
+        const stanzas = document.querySelectorAll('.stanza');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) { setTimeout(() => { entry.target.classList.add('visible'); }, 150 * [...stanzas].indexOf(entry.target)); observer.unobserve(entry.target); }
+            });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        stanzas.forEach(s => observer.observe(s));
+
+        const revealElements = document.querySelectorAll('[data-reveal]');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); revealObserver.unobserve(entry.target); } });
+        }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        const audio = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const iconPlay = playBtn.querySelector('.icon-play');
+        const iconPause = playBtn.querySelector('.icon-pause');
+        const trackBar = document.getElementById('trackBar');
+        const trackProgress = document.getElementById('trackProgress');
+        const trackHandle = document.getElementById('trackHandle');
+        const timeCurrent = document.getElementById('timeCurrent');
+        const timeTotal = document.getElementById('timeTotal');
+        const player = document.getElementById('playerSong');
+        function formatTime(s) { const m = Math.floor(s / 60); const sec = Math.floor(s % 60); return m + ':' + (sec < 10 ? '0' : '') + sec; }
+        audio.addEventListener('loadedmetadata', () => { timeTotal.textContent = formatTime(audio.duration); });
+        audio.addEventListener('timeupdate', () => { const pct = (audio.currentTime / audio.duration) * 100; trackProgress.style.width = pct + '%'; trackHandle.style.left = pct + '%'; timeCurrent.textContent = formatTime(audio.currentTime); });
+        audio.addEventListener('ended', () => { player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; });
+        playBtn.addEventListener('click', () => { if (audio.paused) { audio.play(); player.classList.add('playing'); iconPlay.style.display = 'none'; iconPause.style.display = ''; } else { audio.pause(); player.classList.remove('playing'); iconPlay.style.display = ''; iconPause.style.display = 'none'; } });
+        trackBar.addEventListener('click', (e) => { const rect = trackBar.getBoundingClientRect(); const pct = (e.clientX - rect.left) / rect.width; audio.currentTime = pct * audio.duration; });
+    </script>
+
+</body>
+</html>
