@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Big Is It? 🌍</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f0e17;
+    --card-bg: #1a1932;
+    --text: #fffffe;
+    --text-dim: #a7a9be;
+    --accent1: #ff6b6b;
+    --accent2: #ffd93d;
+    --accent3: #6bcb77;
+    --accent4: #4d96ff;
+    --accent5: #c084fc;
+    --accent6: #ff922b;
+    --pill-bg: #252342;
+    --pill-active: #ff6b6b;
+    --bar-radius: 14px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .stars {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    pointer-events: none; z-index: 0;
+  }
+  .star {
+    position: absolute;
+    width: 3px; height: 3px;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 2s ease-in-out infinite alternate;
+  }
+  @keyframes twinkle { 0% { opacity: 0.2; } 100% { opacity: 0.9; } }
+
+  .container {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    background: linear-gradient(135deg, var(--accent1), var(--accent2), var(--accent3), var(--accent4));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+  }
+  header p {
+    color: var(--text-dim);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .pills-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 20px;
+  }
+  .pill {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    border-radius: 50px;
+    border: 2px solid transparent;
+    background: var(--pill-bg);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+  }
+  .pill:hover { background: #302d52; color: #fff; transform: translateY(-2px); }
+  .pill.active {
+    color: #fff;
+    border-color: currentColor;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+  .pill[data-cat="buildings"].active { background: var(--accent1); color: #fff; }
+  .pill[data-cat="countries"].active { background: var(--accent4); color: #fff; }
+  .pill[data-cat="states"].active { background: var(--accent3); color: #fff; }
+  .pill[data-cat="body"].active { background: var(--accent6); color: #fff; }
+  .pill[data-cat="planets"].active { background: var(--accent5); color: #fff; }
+  .pill[data-cat="moons"].active { background: var(--accent2); color: #1a1932; }
+
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+    padding: 0 4px;
+  }
+  .controls .cat-label {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+  }
+  .sort-btn {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 50px;
+    border: 2px solid var(--text-dim);
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .sort-btn:hover { border-color: #fff; color: #fff; }
+
+  .list { display: flex; flex-direction: column; gap: 14px; }
+
+  .item {
+    display: flex;
+    align-items: stretch;
+    background: var(--card-bg);
+    border-radius: 18px;
+    overflow: hidden;
+    animation: slideIn 0.4s ease both;
+    transition: transform 0.2s;
+    cursor: pointer;
+  }
+  .item:hover { transform: scale(1.015); }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .rank {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 52px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.3rem;
+    color: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.03);
+  }
+
+  .item-body { flex: 1; padding: 14px 16px; min-width: 0; }
+
+  .item-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+  .item-emoji { font-size: 1.5rem; line-height: 1; flex-shrink: 0; }
+  .item-name {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.05rem;
+    flex: 1;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .item-value {
+    font-weight: 800;
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 50px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    width: 100%;
+    height: 14px;
+    background: rgba(255,255,255,0.06);
+    border-radius: var(--bar-radius);
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: var(--bar-radius);
+    transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    background: var(--accent1);
+    min-width: 6px;
+  }
+
+  .fun-facts {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+  .fun-facts.open { display: flex; }
+  .fact {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    line-height: 1.45;
+    padding-left: 20px;
+    position: relative;
+  }
+  .fact::before {
+    content: '⭐';
+    position: absolute;
+    left: 0;
+    font-size: 0.7rem;
+  }
+
+  .tap-hint {
+    text-align: center;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+    opacity: 0.6;
+  }
+
+  @media (max-width: 500px) {
+    .pill { font-size: 0.8rem; padding: 8px 14px; }
+    .item-name { font-size: 0.95rem; }
+    .rank { min-width: 40px; font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars" id="stars"></div>
+
+<div class="container">
+  <header>
+    <h1>How Big Is It? 🔭</h1>
+    <p>Tap anything to discover fun facts!</p>
+  </header>
+
+  <div class="pills-wrap" id="pills"></div>
+
+  <div class="controls">
+    <span class="cat-label" id="catLabel"></span>
+    <button class="sort-btn" id="sortBtn" onclick="toggleSort()">↓ Biggest First</button>
+  </div>
+
+  <div class="tap-hint" id="tapHint">👆 Tap a card to reveal fun facts!</div>
+
+  <div class="list" id="list"></div>
+</div>
+
+<script>
+// ── DATA ──
+const DATA = {
+  buildings: {
+    label: "🏗️ Tallest Buildings",
+    emoji: "🏙️",
+    unit: "m",
+    unitLabel: "meters tall",
+    color: "#ff6b6b",
+    items: [
+      { name: "Burj Khalifa", value: 828, emoji: "🇦🇪", facts: ["It's so tall you can watch the sunset from the base, take an elevator up, and watch it set again!", "It has over 160 floors and took about 22 million work hours to build."] },
+      { name: "Merdeka 118", value: 679, emoji: "🇲🇾", facts: ["Its triangular shape is inspired by a hand reaching for the sky, symbolizing Malaysia's independence.", "The building has a glass observation deck near the top where you can look straight down!"] },
+      { name: "Shanghai Tower", value: 632, emoji: "🇨🇳", facts: ["It twists 120 degrees from bottom to top, which helps it handle strong typhoon winds.", "Its elevators are among the fastest in the world, zooming at 46 mph!"] },
+      { name: "Abraj Al-Bait", value: 601, emoji: "🇸🇦", facts: ["It has the world's largest clock face — each one is 141 feet across, visible from 16 miles away!", "The complex can house over 100,000 people during the annual Hajj pilgrimage."] },
+      { name: "Ping An Finance Centre", value: 599, emoji: "🇨🇳", facts: ["Originally designed to be even taller, but was shortened so it wouldn't interfere with air traffic.", "It recycles rainwater and uses smart systems to save 54% more energy than a normal building."] },
+      { name: "Lotte World Tower", value: 555, emoji: "🇰🇷", facts: ["The design is inspired by traditional Korean ceramics and calligraphy brushstrokes.", "It has a glass-floor observatory called 'Seoul Sky' on the 117th to 123rd floors!"] },
+      { name: "One World Trade Center", value: 541, emoji: "🇺🇸", facts: ["Its antenna reaches exactly 1,776 feet — the year the Declaration of Independence was signed!", "The base is a fortified, windowless 200-foot concrete structure designed for safety."] },
+      { name: "Guangzhou CTF Finance", value: 530, emoji: "🇨🇳", facts: ["It has one of the highest swimming pools in the world on the 93rd floor!", "The building has a special tuned mass damper to keep it from swaying in the wind."] },
+      { name: "Tianjin CTF Finance", value: 530, emoji: "🇨🇳", facts: ["It's a twin to the Guangzhou CTF, built by the same company in a different city.", "The tower has 97 floors and contains a luxury hotel, offices, and apartments."] },
+      { name: "CITIC Tower", value: 528, emoji: "🇨🇳", facts: ["Nicknamed 'China Zun' because its shape looks like an ancient Chinese wine vessel.", "It's the tallest building in Beijing and can withstand a magnitude 8 earthquake!"] },
+      { name: "TAIPEI 101", value: 508, emoji: "🇹🇼", facts: ["A giant 730-ton golden ball hangs inside to stop the building from swaying during typhoons!", "Its design represents a giant bamboo stalk, a symbol of strength in Asian culture."] },
+      { name: "Shanghai World Financial Center", value: 492, emoji: "🇨🇳", facts: ["The rectangular hole at the top earned it the nickname 'The Bottle Opener'.", "It has the world's highest observation bridge inside that opening at the top!"] },
+      { name: "International Commerce Centre", value: 484, emoji: "🇭🇰", facts: ["It sits right on top of a subway station so you can take the train directly into it!", "The Ritz-Carlton hotel inside occupies floors 102–118, making it one of the highest hotels on Earth."] },
+      { name: "Wuhan Greenland Center", value: 476, emoji: "🇨🇳", facts: ["It was originally supposed to be 636m but was reduced in height due to aviation regulations.", "Its sleek design uses three lobes that reduce wind loads by 24%."] },
+      { name: "Lakhta Center", value: 462, emoji: "🇷🇺", facts: ["It's the tallest building in all of Europe and the headquarters of the energy company Gazprom.", "The tower's twisted shape was inspired by water and flames dancing together."] },
+      { name: "Landmark 81", value: 461, emoji: "🇻🇳", facts: ["It's the tallest building in Southeast Asia, towering over Ho Chi Minh City.", "Its design is inspired by a bundle of bamboo shoots growing toward the sky."] },
+      { name: "Changsha IFS Tower T1", value: 452, emoji: "🇨🇳", facts: ["There's a giant sculpture of a man named 'KAWS' looking out from the top of the building!", "It's part of a massive shopping and entertainment complex in central China."] },
+      { name: "Petronas Twin Towers", value: 452, emoji: "🇲🇾", facts: ["A sky bridge on the 41st floor connects the twin towers — it's 558 feet above the ground!", "The towers used more than 36,910 tons of steel rebar during construction."] },
+      { name: "Zifeng Tower", value: 450, emoji: "🇨🇳", facts: ["Its triangular crown lights up at night and can be seen from all across Nanjing.", "The design represents a dragon ascending into the sky, an important Chinese symbol."] },
+      { name: "Suzhou IFS", value: 450, emoji: "🇨🇳", facts: ["Located in one of China's most beautiful historic garden cities.", "Its curved glass facade was designed to reflect the surrounding water features."] },
+      { name: "Willis Tower", value: 442, emoji: "🇺🇸", facts: ["It was the world's tallest building for 25 years (1973–1998) when it was called the Sears Tower!", "It has glass balconies called 'The Ledge' that extend out from the 103rd floor."] },
+      { name: "KK100", value: 442, emoji: "🇨🇳", facts: ["The top section looks like a crown made of glass and steel.", "It was built in the young megacity of Shenzhen, which was just a fishing village 40 years ago!"] },
+      { name: "Guangzhou International Finance", value: 440, emoji: "🇨🇳", facts: ["Its design is inspired by a symmetrical jade ornament, a symbol of prosperity.", "The building has a unique hollow center section that creates natural ventilation."] },
+      { name: "111 West 57th Street", value: 435, emoji: "🇺🇸", facts: ["Also known as 'Steinway Tower', it's the skinniest skyscraper in the world relative to its height!", "It's about 24 times taller than it is wide, making it incredibly slender."] },
+      { name: "One Vanderbilt", value: 427, emoji: "🇺🇸", facts: ["Its observation deck 'Summit' has mirrored rooms that make you feel like you're floating in the sky!", "It connects directly to Grand Central Terminal, one of NYC's busiest train stations."] }
+    ]
+  },
+  countries: {
+    label: "🌍 Biggest Countries",
+    emoji: "🗺️",
+    unit: "km²",
+    unitLabel: "square km",
+    color: "#4d96ff",
+    items: [
+      { name: "Russia", value: 17098242, emoji: "🇷🇺", facts: ["Russia is so wide that it spans 11 time zones — when it's morning in the west, it's already nighttime in the east!", "It contains Lake Baikal, the deepest lake on Earth, holding 20% of the world's unfrozen freshwater."] },
+      { name: "Canada", value: 9984670, emoji: "🇨🇦", facts: ["Canada has more lakes than the rest of the world combined — over 2 million!", "The country's coastline is the longest on Earth. Walking it would take over 30 years nonstop!"] },
+      { name: "United States", value: 9833520, emoji: "🇺🇸", facts: ["The US has every type of climate — from frozen tundra in Alaska to tropical beaches in Hawaii!", "It has over 400 national parks covering more than 85 million acres."] },
+      { name: "China", value: 9596960, emoji: "🇨🇳", facts: ["China's Great Wall stretches over 13,000 miles and is visible from high-altitude aircraft!", "All of China uses a single time zone even though the country is wide enough for five!"] },
+      { name: "Brazil", value: 8515767, emoji: "🇧🇷", facts: ["The Amazon Rainforest covers about 60% of Brazil and produces 20% of the world's oxygen!", "Brazil is home to the widest river in the world — the Amazon can be 30 miles wide in rainy season!"] },
+      { name: "Australia", value: 7692024, emoji: "🇦🇺", facts: ["Australia is both a country AND a continent — the only place on Earth that's both!", "It has a fence over 3,400 miles long built to keep wild dingoes away from sheep farms."] },
+      { name: "India", value: 3287263, emoji: "🇮🇳", facts: ["India has the world's largest population with over 1.4 billion people!", "It's home to the wettest place on Earth — Mawsynram gets about 467 inches of rain per year!"] },
+      { name: "Argentina", value: 2780400, emoji: "🇦🇷", facts: ["Argentina stretches from tropical jungles in the north to glaciers in the south!", "It has the widest avenue in the world — Avenida 9 de Julio is 12 lanes across!"] },
+      { name: "Kazakhstan", value: 2724900, emoji: "🇰🇿", facts: ["It's the world's largest landlocked country — no ocean borders anywhere!", "The first human was launched into space from Kazakhstan's Baikonur Cosmodrome in 1961."] },
+      { name: "Algeria", value: 2381741, emoji: "🇩🇿", facts: ["It's the largest country in Africa and most of it is covered by the Sahara Desert!", "Ancient Roman ruins are scattered across the northern parts of the country."] },
+      { name: "DR Congo", value: 2344858, emoji: "🇨🇩", facts: ["The Congo River is the deepest river in the world at over 720 feet in places!", "It contains more than half of Africa's remaining tropical rainforest."] },
+      { name: "Saudi Arabia", value: 2149690, emoji: "🇸🇦", facts: ["There are zero permanent rivers in the entire country — it's nearly all desert!", "It's home to the Rub' al Khali, the largest continuous sand desert on Earth."] },
+      { name: "Mexico", value: 1964375, emoji: "🇲🇽", facts: ["Mexico City was built on top of an ancient Aztec city that sat on a lake!", "It has the world's smallest volcano — Cuexcomate is only 43 feet tall!"] },
+      { name: "Indonesia", value: 1910931, emoji: "🇮🇩", facts: ["Indonesia is made up of over 17,000 islands — you could visit a new one every day for 46 years!", "It's home to Komodo dragons, the largest lizards on Earth, growing up to 10 feet long!"] },
+      { name: "Sudan", value: 1861484, emoji: "🇸🇩", facts: ["Sudan actually has more ancient pyramids than Egypt — over 200 of them!", "The Blue Nile and White Nile rivers join together in Sudan's capital, Khartoum."] },
+      { name: "Libya", value: 1759540, emoji: "🇱🇾", facts: ["Libya recorded the highest temperature ever on Earth at 136°F — though this record is disputed!", "About 90% of the country is covered in desert with almost no rainfall."] },
+      { name: "Iran", value: 1648195, emoji: "🇮🇷", facts: ["Iran is home to one of the world's oldest civilizations, dating back over 7,000 years!", "The country has a desert called Dasht-e Lut where ground temperatures reached 159°F — the hottest surface on Earth!"] },
+      { name: "Mongolia", value: 1564110, emoji: "🇲🇳", facts: ["Mongolia is the most sparsely populated country — there are more horses than people!", "The Gobi Desert in Mongolia is where some of the first dinosaur eggs were discovered!"] },
+      { name: "Peru", value: 1285216, emoji: "🇵🇪", facts: ["Peru has the mysterious Nazca Lines — giant drawings in the desert only visible from the sky!", "The Amazon River starts high up in the Peruvian Andes mountains."] },
+      { name: "Chad", value: 1284000, emoji: "🇹🇩", facts: ["Lake Chad used to be one of the largest lakes in Africa but has shrunk by 90% since the 1960s!", "The Sahara Desert covers the entire northern half of the country."] },
+      { name: "Niger", value: 1267000, emoji: "🇳🇪", facts: ["Niger contains part of the Sahara and has some of the hottest cities on Earth!", "Dinosaur fossils including a 'Nigersaurus' with over 500 teeth were found here!"] },
+      { name: "Angola", value: 1246700, emoji: "🇦🇴", facts: ["Angola has a strange exclave called Cabinda that is completely separated from the rest of the country!", "The Kalandula Falls in Angola are among the largest waterfalls in Africa by volume."] },
+      { name: "Mali", value: 1240192, emoji: "🇲🇱", facts: ["The ancient city of Timbuktu was once one of the richest and most scholarly cities in the world!", "Mali's Djenné Mosque is the largest mud-brick building on Earth."] },
+      { name: "South Africa", value: 1221037, emoji: "🇿🇦", facts: ["South Africa has THREE capital cities — one for each branch of government!", "It's the only country where two Nobel Peace Prize winners lived on the same street."] },
+      { name: "Colombia", value: 1141748, emoji: "🇨🇴", facts: ["Colombia is the only South American country with coastlines on both the Pacific Ocean AND the Caribbean Sea!", "It produces about 60% of the world's emeralds."] }
+    ]
+  },
+  states: {
+    label: "🇺🇸 Biggest US States",
+    emoji: "🗺️",
+    unit: "mi²",
+    unitLabel: "square miles",
+    color: "#6bcb77",
+    items: [
+      { name: "Alaska", value: 665384, emoji: "🏔️", facts: ["Alaska is so big that if you put it on top of the Lower 48, it would cover about 1/5 of the area!", "It has over 3 million lakes and more coastline than all other US states combined."] },
+      { name: "Texas", value: 268596, emoji: "🤠", facts: ["Texas has its own power grid, separate from the rest of the United States!", "King Ranch in Texas is bigger than the entire state of Rhode Island."] },
+      { name: "California", value: 163696, emoji: "🌴", facts: ["If California were its own country, it would have the 5th largest economy in the world!", "It has the tallest tree (Hyperion, 380 ft), highest point in the Lower 48, and lowest point in North America."] },
+      { name: "Montana", value: 147040, emoji: "⛰️", facts: ["Montana has more cows than people — about 3 cows for every 1 person!", "Glacier National Park once had 150 glaciers; now fewer than 25 remain due to warming."] },
+      { name: "New Mexico", value: 121590, emoji: "🌵", facts: ["White Sands National Park has the world's largest gypsum sand dune field — the sand is bright white!", "The first atomic bomb was tested here in 1945 at the Trinity Site."] },
+      { name: "Arizona", value: 113990, emoji: "🏜️", facts: ["The Grand Canyon is over a mile deep and could hold about 900 trillion footballs inside it!", "Arizona doesn't observe Daylight Saving Time — their clocks never 'spring forward'."] },
+      { name: "Nevada", value: 110572, emoji: "🎰", facts: ["Nevada is the driest state in the US, receiving only about 10 inches of rain per year.", "Area 51 is located here and is one of the most secretive places on Earth!"] },
+      { name: "Colorado", value: 104094, emoji: "🏔️", facts: ["Colorado has over 50 mountain peaks above 14,000 feet — more than any other state!", "The US Air Force Academy and NORAD are both located inside Colorado's mountains."] },
+      { name: "Oregon", value: 98379, emoji: "🌲", facts: ["Crater Lake in Oregon is the deepest lake in the US at 1,943 feet deep!", "Oregon has the world's shortest river — the D River is only 120 feet long."] },
+      { name: "Wyoming", value: 97813, emoji: "🦬", facts: ["Wyoming has the smallest population of any state — only about 580,000 people!", "Yellowstone's Old Faithful geyser erupts roughly every 90 minutes like clockwork."] },
+      { name: "Michigan", value: 96714, emoji: "🏖️", facts: ["Michigan touches 4 of the 5 Great Lakes and has more freshwater coastline than any other state!", "It's actually two separate pieces of land (peninsulas) connected by one of the longest bridges in the world."] },
+      { name: "Utah", value: 84899, emoji: "🏜️", facts: ["Utah has 5 national parks known as 'The Mighty Five,' all with stunning red rock landscapes.", "The Great Salt Lake is so salty you can float on it without trying!"] },
+      { name: "Minnesota", value: 86936, emoji: "🏒", facts: ["Minnesota is called the 'Land of 10,000 Lakes' but actually has 11,842 lakes!", "It gets so cold in winter that you can sometimes hear trees 'explode' from freezing sap."] },
+      { name: "Kansas", value: 82278, emoji: "🌾", facts: ["Kansas is literally flatter than a pancake — scientists actually measured and confirmed this!", "It sits in the heart of 'Tornado Alley' and can see over 90 tornadoes in a single year."] },
+      { name: "Nebraska", value: 77348, emoji: "🌽", facts: ["Nebraska's Sandhills cover 1/4 of the state and form one of the largest grass-covered dune systems on Earth.", "On game day, the University of Nebraska's stadium becomes the 3rd largest 'city' in the state!"] },
+      { name: "South Dakota", value: 77116, emoji: "🗿", facts: ["Mount Rushmore's presidents' faces are each about 60 feet tall — as tall as a 6-story building!", "The Crazy Horse Memorial, still being carved, will be the largest sculpture in the world when finished."] },
+      { name: "North Dakota", value: 70698, emoji: "🌻", facts: ["North Dakota produces more sunflowers than any other state.", "It's home to the geographic center of North America, marked by a stone monument."] },
+      { name: "Missouri", value: 69707, emoji: "🌊", facts: ["The Gateway Arch in St. Louis is 630 feet tall — the tallest man-made monument in the US!", "Missouri is where the Missouri and Mississippi Rivers meet, creating a massive waterway."] },
+      { name: "Oklahoma", value: 69899, emoji: "🌪️", facts: ["Oklahoma has more man-made lakes than any other state — over 200!", "The state's panhandle is perfectly rectangular and sticks out like a handle on a pan."] },
+      { name: "Washington", value: 71298, emoji: "🌧️", facts: ["Washington grows more apples than any other state — about 10 billion per year!", "Mount Rainier is considered one of the most dangerous volcanoes in the US because millions live nearby."] },
+      { name: "Georgia", value: 59425, emoji: "🍑", facts: ["Georgia is called the Peach State but actually produces more pecans and blueberries than peaches!", "It was the home of Martin Luther King Jr. and is a cradle of the Civil Rights Movement."] },
+      { name: "Florida", value: 65758, emoji: "🐊", facts: ["Florida is the only place on Earth where alligators AND crocodiles live together in the wild!", "It has more lightning strikes per year than any other state — about 1.4 million!"] },
+      { name: "Iowa", value: 56273, emoji: "🌽", facts: ["Iowa produces enough corn each year to fill about 1.5 billion bathtubs!", "About 85% of Iowa's land is farmland — more than almost any other state."] },
+      { name: "Wisconsin", value: 65496, emoji: "🧀", facts: ["Wisconsin produces about 3 billion pounds of cheese per year — 25% of all US cheese!", "It has over 15,000 lakes, many formed by glaciers during the last Ice Age."] },
+      { name: "Illinois", value: 57914, emoji: "🌆", facts: ["Chicago's skyline pioneered the skyscraper — the first one ever was built there in 1885!", "Illinois is so flat in places you can see for 30 miles across the prairie."] }
+    ]
+  },
+  body: {
+    label: "🦴 Body Parts",
+    emoji: "🧬",
+    unit: "cm",
+    unitLabel: "cm (avg. adult)",
+    color: "#ff922b",
+    items: [
+      { name: "Skin (spread out)", value: 1900, emoji: "🖐️", facts: ["Your skin is the largest organ — laid flat, it would cover about 20 square feet, the size of a twin mattress!", "Skin replaces itself every 27 days, meaning you get about 1,000 new skins in a lifetime!"] },
+      { name: "Small Intestine", value: 600, emoji: "🔄", facts: ["Your small intestine is about 20 feet long — longer than a giraffe is tall!", "If you flattened all its inner folds, it would cover the area of a tennis court."] },
+      { name: "Large Intestine", value: 150, emoji: "🔵", facts: ["Despite its name, the large intestine is shorter than the small one — it's called 'large' because it's wider!", "Trillions of helpful bacteria live inside it and help you digest food."] },
+      { name: "Spine", value: 71, emoji: "🦴", facts: ["Your spine has 33 bones called vertebrae stacked like building blocks.", "You're actually taller in the morning because your spine stretches out while you sleep!"] },
+      { name: "Femur (thighbone)", value: 48, emoji: "🦵", facts: ["The femur is the longest and strongest bone in your body — it's stronger than steel by weight!", "It can support up to 30 times your body weight without breaking."] },
+      { name: "Humerus (upper arm)", value: 36, emoji: "💪", facts: ["Funny bone tingles aren't from the bone — it's actually the ulnar nerve getting bumped!", "The name 'humerus' has nothing to do with 'humor' — it comes from ancient Latin."] },
+      { name: "Foot", value: 26, emoji: "🦶", facts: ["Each foot has 26 bones, 33 joints, and over 100 muscles and ligaments!", "Your feet have about 250,000 sweat glands and can produce half a pint of sweat per day!"] },
+      { name: "Tibia (shinbone)", value: 43, emoji: "🦴", facts: ["The tibia is the second largest bone in the body after the femur.", "It bears most of the weight in your lower leg — about 80% of it!"] },
+      { name: "Hand", value: 19, emoji: "✋", facts: ["Your hands have 27 bones each — that's 54 bones total, over a quarter of all bones in your body!", "No two fingerprints are the same — even identical twins have different prints!"] },
+      { name: "Heart", value: 14, emoji: "❤️", facts: ["Your heart beats about 100,000 times every single day — that's 35 million times a year!", "A child's heart is about the size of their fist, and it pumps blood through 60,000 miles of vessels."] },
+      { name: "Skull", value: 22, emoji: "💀", facts: ["Your skull is made of 22 bones fused together like a 3D puzzle.", "A baby's skull isn't fully fused — it has soft spots that allow the brain to grow!"] },
+      { name: "Liver", value: 18, emoji: "🟤", facts: ["The liver is the only organ that can regrow itself — even if 75% is removed, it'll grow back!", "It performs over 500 different jobs including cleaning your blood like a filter."] },
+      { name: "Kidney", value: 12, emoji: "🫘", facts: ["Your kidneys filter about 50 gallons of blood every day — that's like filling a bathtub!", "They're shaped like kidney beans — that's actually how the bean got its name!"] },
+      { name: "Brain", value: 15, emoji: "🧠", facts: ["Your brain uses 20% of all the energy in your body, even though it's only about 2% of your weight!", "It contains about 86 billion nerve cells — more than the number of stars in the Milky Way!"] },
+      { name: "Lungs", value: 25, emoji: "🫁", facts: ["If you opened up all the tiny air sacs in your lungs, they'd cover the area of a tennis court!", "Your right lung is slightly bigger than your left to make room for your heart."] },
+      { name: "Eyeball", value: 2.5, emoji: "👁️", facts: ["Your eyes can distinguish about 10 million different colors!", "Eyeballs are almost the same size from birth — they barely grow as you get older."] },
+      { name: "Tongue", value: 10, emoji: "👅", facts: ["Your tongue is the only muscle in your body attached at just one end.", "Every person's tongue print is unique, just like fingerprints!"] },
+      { name: "Ear", value: 7, emoji: "👂", facts: ["Your ears never stop working — even when you're asleep, they still hear sounds!", "Tiny bones inside your ear (the smallest in your body!) vibrate to help you hear."] },
+      { name: "Thumb", value: 6, emoji: "👍", facts: ["Humans can touch their thumb to each finger — most animals can't do this!", "Your thumb has its own pulse because it has its own artery."] },
+      { name: "Nose", value: 5, emoji: "👃", facts: ["Your nose can remember 50,000 different scents!", "Your nose and ears never stop growing — very slowly — your entire life!"] },
+      { name: "Pancreas", value: 15, emoji: "🟡", facts: ["The pancreas makes juices that help break down food AND controls blood sugar levels.", "It produces about 8 cups of digestive juice every single day!"] },
+      { name: "Spleen", value: 12, emoji: "🟣", facts: ["The spleen acts like a blood filter, removing old red blood cells.", "You can live without a spleen, but you'd need to be extra careful about infections."] },
+      { name: "Bladder (stretched)", value: 12, emoji: "💧", facts: ["Your bladder can stretch to hold about 2 cups of liquid when full.", "The urge to pee starts when your bladder is only about 1/3 full!"] },
+      { name: "Gallbladder", value: 10, emoji: "💚", facts: ["The gallbladder stores bile that helps you digest fatty foods.", "It's shaped like a tiny pear and is only about 3-4 inches long!"] },
+      { name: "Appendix", value: 9, emoji: "🔸", facts: ["Scientists now think the appendix stores good bacteria as a 'backup' for your gut!", "It was once thought to be useless, but turns out it helps your immune system."] }
+    ]
+  },
+  planets: {
+    label: "🪐 Planets & Dwarf Planets",
+    emoji: "✨",
+    unit: "km",
+    unitLabel: "km diameter",
+    color: "#c084fc",
+    items: [
+      { name: "Jupiter", value: 139820, emoji: "🟤", facts: ["Jupiter is so massive that over 1,300 Earths could fit inside it!", "Its Great Red Spot is a storm that has been raging for at least 350 years and is bigger than Earth!"] },
+      { name: "Saturn", value: 116460, emoji: "🪐", facts: ["Saturn's rings are made of billions of chunks of ice and rock, some as small as grains of sand!", "Saturn is so light it would float in a bathtub — if you could find one big enough!"] },
+      { name: "Uranus", value: 50724, emoji: "🔵", facts: ["Uranus rotates on its side like a rolling ball — scientists think something huge crashed into it long ago.", "A single year on Uranus lasts 84 Earth years, and each season is 21 years long!"] },
+      { name: "Neptune", value: 49244, emoji: "💙", facts: ["Neptune has the strongest winds in the solar system — over 1,200 mph!", "It takes 165 Earth years for Neptune to orbit the Sun — it's only completed one orbit since its discovery!"] },
+      { name: "Earth", value: 12742, emoji: "🌍", facts: ["Earth is the only planet known to have liquid water on its surface and life!", "Our planet is spinning at about 1,000 mph at the equator — you just can't feel it!"] },
+      { name: "Venus", value: 12104, emoji: "🌕", facts: ["Venus spins backwards compared to most planets — the Sun rises in the west there!", "A day on Venus is longer than its year — it takes 243 Earth days to spin once!"] },
+      { name: "Mars", value: 6779, emoji: "🔴", facts: ["Mars has the tallest volcano in the solar system — Olympus Mons is about 3 times the height of Mt. Everest!", "Mars sunsets are blue, the opposite of Earth's orange sunsets!"] },
+      { name: "Mercury", value: 4879, emoji: "⚫", facts: ["Mercury's temperatures swing from −280°F at night to 800°F during the day!", "Despite being closest to the Sun, it's NOT the hottest planet — Venus is, because of its thick atmosphere."] },
+      { name: "Ganymede (Jupiter moon)", value: 5268, emoji: "🟡", facts: ["Ganymede is bigger than the planet Mercury and is the largest moon in the solar system!", "It's the only moon known to have its own magnetic field."] },
+      { name: "Titan (Saturn moon)", value: 5150, emoji: "🟠", facts: ["Titan has lakes and rivers, but they're made of liquid methane, not water!", "It has a thick atmosphere — the only moon in our solar system with a dense one."] },
+      { name: "Pluto", value: 2377, emoji: "💜", facts: ["Pluto was a planet for 76 years before being reclassified as a dwarf planet in 2006.", "It has a giant heart-shaped glacier on its surface made of frozen nitrogen!"] },
+      { name: "Eris", value: 2326, emoji: "⚪", facts: ["Eris is slightly smaller than Pluto but 27% more massive — it's super dense!", "It's named after the Greek goddess of chaos because its discovery caused chaos about what counts as a planet!"] },
+      { name: "Haumea", value: 1560, emoji: "🥚", facts: ["Haumea is shaped like a squished egg because it spins incredibly fast — one rotation every 4 hours!", "It has two small moons and a ring, making it one of the strangest objects in the solar system."] },
+      { name: "Makemake", value: 1430, emoji: "🟤", facts: ["Makemake is named after the creation god of the Rapa Nui people of Easter Island.", "It's one of the brightest objects in the Kuiper Belt — visible with a powerful amateur telescope!"] },
+      { name: "Ceres", value: 946, emoji: "⚪", facts: ["Ceres is the largest object in the asteroid belt and was the first dwarf planet to be visited by a spacecraft!", "Scientists found bright spots on its surface that turned out to be salt deposits from an underground ocean."] },
+      { name: "Sedna", value: 995, emoji: "🔴", facts: ["Sedna takes about 11,400 years to orbit the Sun — one of the longest orbits of any known object!", "It's so far away that the Sun from Sedna's surface would look like a very bright star."] },
+      { name: "Quaoar", value: 1110, emoji: "🟤", facts: ["Quaoar has a ring system that shouldn't be possible according to classical physics — it's a mystery!", "It's named after the creation god of the Tongva people, native to Southern California."] },
+      { name: "Gonggong", value: 1230, emoji: "🔴", facts: ["Gonggong is one of the reddest objects in the outer solar system!", "It's named after a Chinese water god known for causing floods and chaos."] },
+      { name: "Orcus", value: 910, emoji: "⚫", facts: ["Orcus is sometimes called the 'anti-Pluto' because its orbit is almost a mirror image of Pluto's!", "It has a large moon named Vanth that is about 1/3 its size."] },
+      { name: "Callisto (Jupiter moon)", value: 4821, emoji: "⚫", facts: ["Callisto is the most heavily cratered object in the solar system!", "Its surface is about 4 billion years old — almost as old as the solar system itself."] },
+      { name: "Io (Jupiter moon)", value: 3643, emoji: "🟡", facts: ["Io is the most volcanically active body in the solar system with over 400 active volcanoes!", "Its surface is constantly being reshaped by lava flows — no other world changes so fast."] },
+      { name: "Europa (Jupiter moon)", value: 3122, emoji: "⚪", facts: ["Europa has a vast ocean of liquid water under its icy shell — maybe even twice as much water as Earth!", "Scientists think it's one of the best places in the solar system to look for alien life."] },
+      { name: "Triton (Neptune moon)", value: 2707, emoji: "💙", facts: ["Triton orbits Neptune backwards — it's the only large moon to do this, so it was probably captured!", "It has geysers that shoot nitrogen gas 5 miles into the sky!"] },
+      { name: "Moon (Earth)", value: 3474, emoji: "🌙", facts: ["The Moon is slowly drifting away from Earth — about 1.5 inches per year!", "Footprints on the Moon will last for millions of years because there's no wind or rain to erase them."] },
+      { name: "Charon (Pluto moon)", value: 1212, emoji: "⚫", facts: ["Charon is so big compared to Pluto that they actually orbit around each other!", "It may have had a subsurface ocean that froze and cracked its entire surface."] }
+    ]
+  },
+  moons: {
+    label: "🌙 Largest Moons",
+    emoji: "🌕",
+    unit: "km",
+    unitLabel: "km diameter",
+    color: "#ffd93d",
+    items: [
+      { name: "Ganymede (Jupiter)", value: 5268, emoji: "🟡", facts: ["Ganymede is bigger than Mercury and is the largest moon in the entire solar system!", "It has its own magnetic field — the only moon known to have one."] },
+      { name: "Titan (Saturn)", value: 5150, emoji: "🟠", facts: ["Titan is the only moon with a thick atmosphere — it's even denser than Earth's!", "It rains liquid methane on Titan, forming rivers and lakes on the surface."] },
+      { name: "Callisto (Jupiter)", value: 4821, emoji: "⚫", facts: ["Callisto is the most cratered object in the solar system — its surface is ancient!", "It may have a salty ocean deep beneath its icy, battered surface."] },
+      { name: "Io (Jupiter)", value: 3643, emoji: "🟡", facts: ["Io has over 400 active volcanoes — more than any other world!", "Jupiter's gravity squeezes Io so hard it heats up the inside and powers all those volcanoes."] },
+      { name: "Moon (Earth)", value: 3474, emoji: "🌙", facts: ["Our Moon is the 5th largest in the solar system and the largest relative to its planet!", "It causes ocean tides on Earth and is slowly spinning further away each year."] },
+      { name: "Europa (Jupiter)", value: 3122, emoji: "⚪", facts: ["Europa's icy shell hides an ocean with more water than all of Earth's oceans combined!", "NASA is sending the Europa Clipper mission to investigate if life could exist there."] },
+      { name: "Triton (Neptune)", value: 2707, emoji: "💙", facts: ["Triton orbits Neptune backwards — it was likely captured from the Kuiper Belt!", "It has cryovolcanoes that erupt nitrogen gas instead of lava."] },
+      { name: "Titania (Uranus)", value: 1577, emoji: "🔵", facts: ["Titania is the largest moon of Uranus, named after the queen of fairies in Shakespeare!", "It has enormous canyons stretching across its surface — some over 1,000 miles long."] },
+      { name: "Rhea (Saturn)", value: 1528, emoji: "⚪", facts: ["Rhea is made mostly of ice — about 75% ice and 25% rock!", "It may have a faint ring system of its own — which would make it the only moon with rings!"] },
+      { name: "Oberon (Uranus)", value: 1523, emoji: "🔵", facts: ["Oberon is named after the king of fairies in Shakespeare's A Midsummer Night's Dream.", "It has a mountain that is about 6 km tall — nearly as tall as Mount Kilimanjaro!"] },
+      { name: "Iapetus (Saturn)", value: 1469, emoji: "⬛", facts: ["Iapetus is two-toned — one half is bright white and the other is dark black!", "It has a giant ridge around its equator making it look like a walnut."] },
+      { name: "Charon (Pluto)", value: 1212, emoji: "⚫", facts: ["Charon is half the size of Pluto — they're more like a double dwarf planet!", "Its north pole has a reddish cap scientists have nicknamed 'Mordor.'"] },
+      { name: "Umbriel (Uranus)", value: 1169, emoji: "🔵", facts: ["Umbriel is the darkest of Uranus's large moons but has one bright crater on top.", "Its name comes from a character in Alexander Pope's poem 'The Rape of the Lock.'"] },
+      { name: "Ariel (Uranus)", value: 1158, emoji: "🔵", facts: ["Ariel has the brightest and youngest surface of all Uranus's moons.", "Its surface is crisscrossed with valleys and canyons carved by flowing ice."] },
+      { name: "Dione (Saturn)", value: 1123, emoji: "⚪", facts: ["Dione has bright ice cliffs called 'wispy terrain' that stretch for hundreds of miles.", "There may be an ocean hiding 60 miles beneath its frozen surface."] },
+      { name: "Tethys (Saturn)", value: 1062, emoji: "⚪", facts: ["Tethys is almost entirely made of water ice and is one of the least dense moons in the solar system.", "It has a massive crater called Odysseus that covers almost 40% of the moon's diameter!"] },
+      { name: "Enceladus (Saturn)", value: 504, emoji: "💎", facts: ["Enceladus shoots giant plumes of water ice into space from cracks near its south pole!", "The water feeds directly into Saturn's rings — this tiny moon builds the E ring."] },
+      { name: "Miranda (Uranus)", value: 472, emoji: "🔵", facts: ["Miranda has the tallest cliff in the solar system — Verona Rupes is 12 miles high!", "Its surface looks like it was smashed apart and put back together — scientists call it 'Frankenstein's moon.'"] },
+      { name: "Mimas (Saturn)", value: 396, emoji: "⚪", facts: ["Mimas has a huge crater that makes it look almost exactly like the Death Star from Star Wars!", "It's the smallest body known to be round because of its own gravity."] },
+      { name: "Hyperion (Saturn)", value: 270, emoji: "🟤", facts: ["Hyperion looks like a giant sponge — it's one of the weirdest-shaped moons!", "It tumbles chaotically through space with no predictable rotation pattern."] },
+      { name: "Proteus (Neptune)", value: 420, emoji: "💙", facts: ["Proteus is the largest irregular (non-round) moon — it's almost big enough to become spherical.", "It was only discovered in 1989 when Voyager 2 flew past Neptune!"] },
+      { name: "Phoebe (Saturn)", value: 213, emoji: "⬛", facts: ["Phoebe orbits Saturn backwards and is thought to be a captured Kuiper Belt object!", "Its dark surface is very different from Saturn's other icy moons."] },
+      { name: "Nereid (Neptune)", value: 340, emoji: "💙", facts: ["Nereid has one of the most eccentric orbits of any moon — it swings wildly close and far from Neptune.", "One orbit takes about 360 Earth days, almost exactly one Earth year!"] },
+      { name: "Dysnomia (Eris)", value: 700, emoji: "⚪", facts: ["Dysnomia is named after the daughter of Eris (goddess of chaos) — she's the spirit of lawlessness!", "By watching Dysnomia orbit Eris, scientists figured out that Eris is heavier than Pluto."] },
+      { name: "Deimos (Mars)", value: 12, emoji: "🔴", facts: ["Deimos is one of the smallest moons in the solar system — only about 7.5 miles across!", "It orbits Mars so slowly that it appears to rise in the east and set in the east from the surface."] }
+    ]
+  }
+};
+
+// ── STATE ──
+let currentCat = 'buildings';
+let ascending = false;
+
+// ── STARS BACKGROUND ──
+function createStars() {
+  const el = document.getElementById('stars');
+  for (let i = 0; i < 80; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.left = Math.random() * 100 + '%';
+    s.style.top = Math.random() * 100 + '%';
+    s.style.animationDelay = Math.random() * 2 + 's';
+    s.style.width = s.style.height = (Math.random() * 2 + 1) + 'px';
+    el.appendChild(s);
+  }
+}
+
+// ── PILLS ──
+function renderPills() {
+  const wrap = document.getElementById('pills');
+  wrap.innerHTML = '';
+  const cats = Object.keys(DATA);
+  cats.forEach(key => {
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (key === currentCat ? ' active' : '');
+    btn.dataset.cat = key;
+    btn.textContent = DATA[key].label;
+    btn.onclick = () => { currentCat = key; renderPills(); renderList(); };
+    wrap.appendChild(btn);
+  });
+}
+
+// ── FORMAT NUMBER ──
+function fmt(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (n >= 10000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+  return n.toLocaleString();
+}
+
+// ── RENDER LIST ──
+function renderList() {
+  const cat = DATA[currentCat];
+  document.getElementById('catLabel').textContent = cat.label;
+  document.getElementById('catLabel').style.color = cat.color;
+
+  const sortBtn = document.getElementById('sortBtn');
+  sortBtn.textContent = ascending ? '↑ Smallest First' : '↓ Biggest First';
+
+  let items = [...cat.items];
+  items.sort((a, b) => ascending ? a.value - b.value : b.value - a.value);
+
+  const maxVal = Math.max(...items.map(i => i.value));
+  const list = document.getElementById('list');
+  list.innerHTML = '';
+
+  items.forEach((item, idx) => {
+    const pct = (item.value / maxVal) * 100;
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.style.animationDelay = (idx * 0.04) + 's';
+
+    el.innerHTML = `
+      <div class="rank">${idx + 1}</div>
+      <div class="item-body">
+        <div class="item-top">
+          <span class="item-emoji">${item.emoji}</span>
+          <span class="item-name">${item.name}</span>
+          <span class="item-value" style="background:${cat.color}22;color:${cat.color}">${fmt(item.value)} ${cat.unit}</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:0%;background:${cat.color}"></div>
+        </div>
+        <div class="fun-facts" id="facts-${idx}">
+          <div class="fact">${item.facts[0]}</div>
+          <div class="fact">${item.facts[1]}</div>
+        </div>
+      </div>
+    `;
+
+    el.onclick = () => {
+      const f = document.getElementById('facts-' + idx);
+      f.classList.toggle('open');
+    };
+
+    list.appendChild(el);
+
+    // animate bar
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        el.querySelector('.bar-fill').style.width = pct + '%';
+      });
+    });
+  });
+}
+
+// ── SORT TOGGLE ──
+function toggleSort() {
+  ascending = !ascending;
+  renderList();
+}
+
+// ── INIT ──
+createStars();
+renderPills();
+renderList();
+</script>
+</body>
+</html>
