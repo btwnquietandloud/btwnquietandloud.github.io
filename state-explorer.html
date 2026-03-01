@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>U.S. State Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<style>
+  :root {
+    --bg: #0b0d14;
+    --surface: #141722;
+    --surface-raised: #1c2030;
+    --surface-hover: #252a3e;
+    --border: #2a3050;
+    --border-bright: #3d4670;
+    --text: #e4e2f0;
+    --text-dim: #7a7e99;
+    --text-faint: #4e5270;
+    --accent: #5b7cf7;
+    --accent-light: #7e9bff;
+    --accent-glow: rgba(91,124,247,0.2);
+    --governor-r: #ef6b6b;
+    --governor-r-bg: rgba(239,107,107,0.08);
+    --governor-r-border: rgba(239,107,107,0.2);
+    --governor-d: #5ba8ef;
+    --governor-d-bg: rgba(91,168,239,0.08);
+    --governor-d-border: rgba(91,168,239,0.2);
+    --motto-gold: #f0c948;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 25% 20%, rgba(91,124,247,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 75% 80%, rgba(147,91,247,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .app { position: relative; z-index: 1; }
+
+  .app-header {
+    text-align: center;
+    padding: 2rem 1rem 0.5rem;
+  }
+
+  .app-header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+    font-weight: 400;
+    background: linear-gradient(135deg, #e4e2f0 10%, #7e9bff 55%, #c49bff 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .app-header .subtitle {
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    font-weight: 300;
+    margin-top: 0.25rem;
+  }
+
+  .filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 1rem 1rem 0.75rem;
+  }
+
+  .filter-btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    padding: 0.5rem 1.3rem;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    user-select: none;
+  }
+
+  .filter-btn:hover {
+    background: var(--surface-hover);
+    border-color: var(--border-bright);
+    color: var(--text);
+  }
+
+  .filter-btn.active {
+    background: linear-gradient(135deg, #5b7cf7 0%, #7e5bf7 100%);
+    border-color: transparent;
+    color: #fff;
+    box-shadow: 0 2px 16px var(--accent-glow);
+  }
+
+  .map-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 0.5rem;
+  }
+
+  #map-container { width: 100%; }
+  #map-container svg { width: 100%; height: auto; display: block; }
+
+  .state-path {
+    fill: var(--surface-raised);
+    stroke: var(--border);
+    stroke-width: 0.5;
+    cursor: pointer;
+    transition: fill 0.18s ease;
+  }
+
+  .state-path:hover {
+    fill: var(--surface-hover);
+    stroke: var(--accent-light);
+    stroke-width: 1.2;
+  }
+
+  .state-path.selected {
+    fill: #1e2850;
+    stroke: var(--accent);
+    stroke-width: 1.8;
+    filter: drop-shadow(0 0 6px var(--accent-glow));
+  }
+
+  .state-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 9px;
+    font-weight: 500;
+    fill: var(--text-faint);
+    pointer-events: none;
+    text-anchor: middle;
+    dominant-baseline: central;
+  }
+
+  .hint-text {
+    text-align: center;
+    color: var(--text-faint);
+    font-size: 0.8rem;
+    font-weight: 300;
+    padding: 0.25rem 0 1.5rem;
+  }
+
+  /* Tooltip */
+  .tooltip {
+    position: fixed;
+    pointer-events: none;
+    background: var(--surface-raised);
+    border: 1px solid var(--border-bright);
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+    z-index: 200;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.12s, transform 0.12s;
+    max-width: 320px;
+    backdrop-filter: blur(12px);
+  }
+
+  .tooltip.visible { opacity: 1; transform: translateY(0); }
+
+  .tooltip .tt-state {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+  }
+
+  .tooltip .tt-abbr {
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--text-faint);
+    letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+  }
+
+  .tooltip .tt-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.1rem;
+  }
+
+  .tooltip .tt-governor { font-size: 0.95rem; font-weight: 500; }
+
+  .tt-party, .panel-party {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    padding: 0.1rem 0.5rem;
+    border-radius: 999px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+
+  .tt-party.R, .panel-party.R {
+    background: var(--governor-r-bg);
+    color: var(--governor-r);
+    border: 1px solid var(--governor-r-border);
+  }
+
+  .tt-party.D, .panel-party.D {
+    background: var(--governor-d-bg);
+    color: var(--governor-d);
+    border: 1px solid var(--governor-d-border);
+  }
+
+  .tooltip .tt-motto {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem;
+    color: var(--motto-gold);
+    line-height: 1.35;
+  }
+
+  .tooltip .tt-motto-en, .panel-motto-en {
+    font-size: 0.82rem;
+    color: var(--text-dim);
+    font-style: italic;
+    margin-top: 0.15rem;
+  }
+
+  /* Bottom panel */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.35);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  .overlay.open { opacity: 1; pointer-events: all; }
+
+  .info-panel {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 1.2rem 1.8rem 2rem;
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+    z-index: 100;
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.5);
+    border-radius: 20px 20px 0 0;
+  }
+
+  .info-panel.open { transform: translateY(0); }
+
+  .info-panel .drag-indicator {
+    width: 36px; height: 4px;
+    border-radius: 2px;
+    background: var(--border-bright);
+    margin: 0 auto 1rem;
+  }
+
+  .info-panel .close-btn {
+    position: absolute;
+    top: 0.8rem; right: 1rem;
+    background: var(--surface-raised);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 1rem;
+    cursor: pointer;
+    width: 28px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+  }
+
+  .info-panel .close-btn:hover {
+    background: var(--surface-hover);
+    color: var(--text);
+  }
+
+  .panel-state-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    margin-bottom: 0.05rem;
+  }
+
+  .panel-abbr {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: var(--text-faint);
+    letter-spacing: 0.12em;
+    margin-bottom: 0.8rem;
+  }
+
+  .panel-label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 0.15rem;
+  }
+
+  .panel-governor {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+
+  .panel-motto {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem;
+    color: var(--motto-gold);
+    line-height: 1.4;
+  }
+
+  .loading {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text-dim);
+    font-weight: 300;
+  }
+
+  .spinner {
+    display: inline-block;
+    width: 24px; height: 24px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-bottom: 0.75rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .app-header { padding: 1.2rem 1rem 0.3rem; }
+    .state-label { font-size: 6.5px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="app-header">
+    <h1>U.S. State Explorer</h1>
+    <div class="subtitle">Click any state to explore</div>
+  </div>
+
+  <div class="filter-bar">
+    <button class="filter-btn active" data-filter="governor" onclick="setFilter('governor')">🏛️ Governor</button>
+    <button class="filter-btn" data-filter="motto" onclick="setFilter('motto')">📜 State Motto</button>
+    <button class="filter-btn" data-filter="nickname" onclick="setFilter('nickname')">🏷️ Nickname</button>
+  </div>
+
+  <div class="map-section">
+    <div id="map-container">
+      <div class="loading"><div class="spinner"></div><div>Loading map…</div></div>
+    </div>
+    <div class="hint-text">Hover or tap a state for details</div>
+  </div>
+</div>
+
+<div class="tooltip" id="tooltip"></div>
+<div class="overlay" id="overlay" onclick="closePanel()"></div>
+<div class="info-panel" id="info-panel">
+  <div class="drag-indicator"></div>
+  <button class="close-btn" onclick="closePanel()">✕</button>
+  <div id="panel-content"></div>
+</div>
+
+<script>
+const stateData = {
+  "01": { abbr:"AL", name:"Alabama", governor:"Kay Ivey", party:"R", motto:"Audemus jura nostra defendere", mottoEn:"We dare defend our rights", nickname:"The Yellowhammer State" },
+  "02": { abbr:"AK", name:"Alaska", governor:"Mike Dunleavy", party:"R", motto:"North to the Future", mottoEn:null, nickname:"The Last Frontier" },
+  "04": { abbr:"AZ", name:"Arizona", governor:"Katie Hobbs", party:"D", motto:"Ditat Deus", mottoEn:"God enriches", nickname:"The Grand Canyon State" },
+  "05": { abbr:"AR", name:"Arkansas", governor:"Sarah Huckabee Sanders", party:"R", motto:"Regnat populus", mottoEn:"The people rule", nickname:"The Natural State" },
+  "06": { abbr:"CA", name:"California", governor:"Gavin Newsom", party:"D", motto:"Eureka", mottoEn:"I have found it", nickname:"The Golden State" },
+  "08": { abbr:"CO", name:"Colorado", governor:"Jared Polis", party:"D", motto:"Nil sine numine", mottoEn:"Nothing without providence", nickname:"The Centennial State" },
+  "09": { abbr:"CT", name:"Connecticut", governor:"Ned Lamont", party:"D", motto:"Qui transtulit sustinet", mottoEn:"He who transplanted sustains", nickname:"The Constitution State" },
+  "10": { abbr:"DE", name:"Delaware", governor:"Matt Meyer", party:"D", motto:"Liberty and Independence", mottoEn:null, nickname:"The First State" },
+  "12": { abbr:"FL", name:"Florida", governor:"Ron DeSantis", party:"R", motto:"In God We Trust", mottoEn:null, nickname:"The Sunshine State" },
+  "13": { abbr:"GA", name:"Georgia", governor:"Brian Kemp", party:"R", motto:"Wisdom, Justice, and Moderation", mottoEn:null, nickname:"The Peach State" },
+  "15": { abbr:"HI", name:"Hawaii", governor:"Josh Green", party:"D", motto:"Ua Mau ke Ea o ka Āina i ka Pono", mottoEn:"The life of the land is perpetuated in righteousness", nickname:"The Aloha State" },
+  "16": { abbr:"ID", name:"Idaho", governor:"Brad Little", party:"R", motto:"Esto perpetua", mottoEn:"Let it be perpetual", nickname:"The Gem State" },
+  "17": { abbr:"IL", name:"Illinois", governor:"JB Pritzker", party:"D", motto:"State Sovereignty, National Union", mottoEn:null, nickname:"The Prairie State" },
+  "18": { abbr:"IN", name:"Indiana", governor:"Mike Braun", party:"R", motto:"The Crossroads of America", mottoEn:null, nickname:"The Hoosier State" },
+  "19": { abbr:"IA", name:"Iowa", governor:"Kim Reynolds", party:"R", motto:"Our Liberties We Prize and Our Rights We Will Maintain", mottoEn:null, nickname:"The Hawkeye State" },
+  "20": { abbr:"KS", name:"Kansas", governor:"Laura Kelly", party:"D", motto:"Ad astra per aspera", mottoEn:"To the stars through difficulties", nickname:"The Sunflower State" },
+  "21": { abbr:"KY", name:"Kentucky", governor:"Andy Beshear", party:"D", motto:"United We Stand, Divided We Fall", mottoEn:null, nickname:"The Bluegrass State" },
+  "22": { abbr:"LA", name:"Louisiana", governor:"Jeff Landry", party:"R", motto:"Union, Justice, Confidence", mottoEn:null, nickname:"The Pelican State" },
+  "23": { abbr:"ME", name:"Maine", governor:"Janet Mills", party:"D", motto:"Dirigo", mottoEn:"I lead", nickname:"The Pine Tree State" },
+  "24": { abbr:"MD", name:"Maryland", governor:"Wes Moore", party:"D", motto:"Fatti maschii, parole femine", mottoEn:"Strong deeds, gentle words", nickname:"The Old Line State" },
+  "25": { abbr:"MA", name:"Massachusetts", governor:"Maura Healey", party:"D", motto:"Ense petit placidam sub libertate quietem", mottoEn:"By the sword we seek peace, but peace only under liberty", nickname:"The Bay State" },
+  "26": { abbr:"MI", name:"Michigan", governor:"Gretchen Whitmer", party:"D", motto:"Si quaeris peninsulam amoenam circumspice", mottoEn:"If you seek a pleasant peninsula, look about you", nickname:"The Great Lakes State" },
+  "27": { abbr:"MN", name:"Minnesota", governor:"Tim Walz", party:"D", motto:"L'Étoile du Nord", mottoEn:"The Star of the North", nickname:"The North Star State" },
+  "28": { abbr:"MS", name:"Mississippi", governor:"Tate Reeves", party:"R", motto:"Virtute et armis", mottoEn:"By valor and arms", nickname:"The Magnolia State" },
+  "29": { abbr:"MO", name:"Missouri", governor:"Mike Kehoe", party:"R", motto:"Salus populi suprema lex esto", mottoEn:"The welfare of the people shall be the supreme law", nickname:"The Show-Me State" },
+  "30": { abbr:"MT", name:"Montana", governor:"Greg Gianforte", party:"R", motto:"Oro y Plata", mottoEn:"Gold and Silver", nickname:"The Treasure State" },
+  "31": { abbr:"NE", name:"Nebraska", governor:"Jim Pillen", party:"R", motto:"Equality Before the Law", mottoEn:null, nickname:"The Cornhusker State" },
+  "32": { abbr:"NV", name:"Nevada", governor:"Joe Lombardo", party:"R", motto:"All for Our Country", mottoEn:null, nickname:"The Silver State" },
+  "33": { abbr:"NH", name:"New Hampshire", governor:"Kelly Ayotte", party:"R", motto:"Live Free or Die", mottoEn:null, nickname:"The Granite State" },
+  "34": { abbr:"NJ", name:"New Jersey", governor:"Mikie Sherrill", party:"D", motto:"Liberty and Prosperity", mottoEn:null, nickname:"The Garden State" },
+  "35": { abbr:"NM", name:"New Mexico", governor:"Michelle Lujan Grisham", party:"D", motto:"Crescit eundo", mottoEn:"It grows as it goes", nickname:"The Land of Enchantment" },
+  "36": { abbr:"NY", name:"New York", governor:"Kathy Hochul", party:"D", motto:"Excelsior", mottoEn:"Ever upward", nickname:"The Empire State" },
+  "37": { abbr:"NC", name:"North Carolina", governor:"Josh Stein", party:"D", motto:"Esse quam videri", mottoEn:"To be, rather than to seem", nickname:"The Tar Heel State" },
+  "38": { abbr:"ND", name:"North Dakota", governor:"Kelly Armstrong", party:"R", motto:"Liberty and Union, Now and Forever, One and Inseparable", mottoEn:null, nickname:"The Peace Garden State" },
+  "39": { abbr:"OH", name:"Ohio", governor:"Mike DeWine", party:"R", motto:"With God, All Things Are Possible", mottoEn:null, nickname:"The Buckeye State" },
+  "40": { abbr:"OK", name:"Oklahoma", governor:"Kevin Stitt", party:"R", motto:"Labor omnia vincit", mottoEn:"Labor conquers all things", nickname:"The Sooner State" },
+  "41": { abbr:"OR", name:"Oregon", governor:"Tina Kotek", party:"D", motto:"Alis volat propriis", mottoEn:"She flies with her own wings", nickname:"The Beaver State" },
+  "42": { abbr:"PA", name:"Pennsylvania", governor:"Josh Shapiro", party:"D", motto:"Virtue, Liberty and Independence", mottoEn:null, nickname:"The Keystone State" },
+  "44": { abbr:"RI", name:"Rhode Island", governor:"Dan McKee", party:"D", motto:"Hope", mottoEn:null, nickname:"The Ocean State" },
+  "45": { abbr:"SC", name:"South Carolina", governor:"Henry McMaster", party:"R", motto:"Dum spiro spero", mottoEn:"While I breathe, I hope", nickname:"The Palmetto State" },
+  "46": { abbr:"SD", name:"South Dakota", governor:"Larry Rhoden", party:"R", motto:"Under God the People Rule", mottoEn:null, nickname:"The Mount Rushmore State" },
+  "47": { abbr:"TN", name:"Tennessee", governor:"Bill Lee", party:"R", motto:"Agriculture and Commerce", mottoEn:null, nickname:"The Volunteer State" },
+  "48": { abbr:"TX", name:"Texas", governor:"Greg Abbott", party:"R", motto:"Friendship", mottoEn:null, nickname:"The Lone Star State" },
+  "49": { abbr:"UT", name:"Utah", governor:"Spencer Cox", party:"R", motto:"Industry", mottoEn:null, nickname:"The Beehive State" },
+  "50": { abbr:"VT", name:"Vermont", governor:"Phil Scott", party:"R", motto:"Freedom and Unity", mottoEn:null, nickname:"The Green Mountain State" },
+  "51": { abbr:"VA", name:"Virginia", governor:"Abigail Spanberger", party:"D", motto:"Sic semper tyrannis", mottoEn:"Thus always to tyrants", nickname:"The Old Dominion" },
+  "53": { abbr:"WA", name:"Washington", governor:"Bob Ferguson", party:"D", motto:"Al-ki", mottoEn:"By and by", nickname:"The Evergreen State" },
+  "54": { abbr:"WV", name:"West Virginia", governor:"Patrick Morrisey", party:"R", motto:"Montani semper liberi", mottoEn:"Mountaineers are always free", nickname:"The Mountain State" },
+  "55": { abbr:"WI", name:"Wisconsin", governor:"Tony Evers", party:"D", motto:"Forward", mottoEn:null, nickname:"The Badger State" },
+  "56": { abbr:"WY", name:"Wyoming", governor:"Mark Gordon", party:"R", motto:"Equal Rights", mottoEn:null, nickname:"The Cowboy State" },
+};
+
+let currentFilter = 'governor';
+let selectedFips = null;
+const tooltip = document.getElementById('tooltip');
+const isTouchDevice = 'ontouchstart' in window;
+
+function setFilter(filter) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.filter === filter));
+  if (selectedFips) showPanel(selectedFips);
+}
+
+function buildContent(data, type) {
+  const labelStyle = 'font-size:0.6rem;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-dim);margin-bottom:0.1rem;';
+  if (type === 'governor') {
+    return `<div style="${labelStyle}">Governor</div>
+      <div style="font-size:0.95rem;font-weight:500;">${data.governor}<span class="tt-party ${data.party}">${data.party === 'R' ? 'Republican' : 'Democrat'}</span></div>`;
+  }
+  if (type === 'nickname') {
+    return `<div style="${labelStyle}">Nickname</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.05rem;color:#7ecbab;line-height:1.35;">${data.nickname}</div>`;
+  }
+  let h = `<div style="${labelStyle}">State Motto</div>
+    <div style="font-family:'DM Serif Display',serif;font-size:1rem;color:var(--motto-gold);line-height:1.35;">\u201C${data.motto}\u201D</div>`;
+  if (data.mottoEn) h += `<div style="font-size:0.82rem;color:var(--text-dim);font-style:italic;margin-top:0.15rem;">${data.mottoEn}</div>`;
+  return h;
+}
+
+function showTooltip(event, fips) {
+  if (isTouchDevice) return;
+  const data = stateData[fips];
+  if (!data) return;
+  tooltip.innerHTML = `<div style="font-family:'DM Serif Display',serif;font-size:1.15rem;">${data.name}</div>
+    <div style="font-size:0.6rem;font-weight:600;color:var(--text-faint);letter-spacing:0.12em;margin-bottom:0.5rem;">${data.abbr}</div>
+    ${buildContent(data, currentFilter)}`;
+  tooltip.classList.add('visible');
+  positionTooltip(event);
+}
+
+function positionTooltip(event) {
+  const pad = 14;
+  const r = tooltip.getBoundingClientRect();
+  let x = event.clientX + pad, y = event.clientY + pad;
+  if (x + r.width > window.innerWidth - 10) x = event.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 10) y = event.clientY - r.height - pad;
+  tooltip.style.left = x + 'px';
+  tooltip.style.top = y + 'px';
+}
+
+function hideTooltip() { tooltip.classList.remove('visible'); }
+
+function showPanel(fips) {
+  const data = stateData[fips];
+  if (!data) return;
+  selectedFips = fips;
+  d3.selectAll('.state-path').classed('selected', false);
+  d3.select(`#state-${fips}`).classed('selected', true);
+
+  let html = `<div class="panel-state-name">${data.name}</div><div class="panel-abbr">${data.abbr}</div>`;
+  if (currentFilter === 'governor') {
+    html += `<div class="panel-label">Current Governor</div>
+      <div class="panel-governor">${data.governor}<span class="panel-party ${data.party}">${data.party === 'R' ? 'Republican' : 'Democrat'}</span></div>`;
+  } else if (currentFilter === 'motto') {
+    html += `<div class="panel-label">State Motto</div>
+      <div class="panel-motto">\u201C${data.motto}\u201D</div>`;
+    if (data.mottoEn) html += `<div class="panel-motto-en">${data.mottoEn}</div>`;
+  } else if (currentFilter === 'nickname') {
+    html += `<div class="panel-label">State Nickname</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.3rem;color:#7ecbab;margin-top:0.2rem;">${data.nickname}</div>`;
+  }
+  document.getElementById('panel-content').innerHTML = html;
+  document.getElementById('info-panel').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+
+function closePanel() {
+  document.getElementById('info-panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+  d3.selectAll('.state-path').classed('selected', false);
+  selectedFips = null;
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePanel(); });
+
+// ============ D3 MAP RENDERING ============
+async function loadMap() {
+  try {
+    const res = await fetch('https://cdn.jsdelivr.net/npm/us-atlas@3/states-albers-10m.json');
+    const us = await res.json();
+    const container = document.getElementById('map-container');
+    container.innerHTML = '';
+
+    const svg = d3.select(container).append('svg')
+      .attr('viewBox', '0 0 975 610')
+      .attr('preserveAspectRatio', 'xMidYMid meet');
+
+    const path = d3.geoPath();
+    const states = topojson.feature(us, us.objects.states);
+
+    svg.append('g').selectAll('path')
+      .data(states.features)
+      .join('path')
+      .attr('class', 'state-path')
+      .attr('id', d => `state-${d.id}`)
+      .attr('d', path)
+      .on('mouseenter', (event, d) => showTooltip(event, d.id))
+      .on('mousemove', (event) => positionTooltip(event))
+      .on('mouseleave', () => hideTooltip())
+      .on('click', (event, d) => { hideTooltip(); showPanel(d.id); });
+
+    // State borders
+    svg.append('path')
+      .datum(topojson.mesh(us, us.objects.states, (a, b) => a !== b))
+      .attr('fill', 'none').attr('stroke', 'var(--border)').attr('stroke-width', 0.6)
+      .attr('stroke-linejoin', 'round').attr('pointer-events', 'none').attr('d', path);
+
+    // Nation outline
+    svg.append('path')
+      .datum(topojson.mesh(us, us.objects.nation))
+      .attr('fill', 'none').attr('stroke', 'var(--border-bright)').attr('stroke-width', 1.2)
+      .attr('stroke-linejoin', 'round').attr('pointer-events', 'none').attr('d', path);
+
+    // Labels
+    const offsets = {
+      "09":[34,2],"10":[30,6],"24":[34,-2],"25":[38,-3],"33":[22,-8],
+      "34":[28,3],"44":[36,1],"50":[18,-12],"11":[40,14]
+    };
+
+    svg.append('g').selectAll('text')
+      .data(states.features.filter(d => stateData[d.id]))
+      .join('text')
+      .attr('class', 'state-label')
+      .attr('x', d => { const c = path.centroid(d); const o = offsets[d.id]; return c[0] + (o ? o[0] : 0); })
+      .attr('y', d => { const c = path.centroid(d); const o = offsets[d.id]; return c[1] + (o ? o[1] : 0); })
+      .text(d => stateData[d.id].abbr);
+
+  } catch (err) {
+    document.getElementById('map-container').innerHTML =
+      '<div class="loading" style="color:var(--governor-r)">Failed to load map. Please check your connection and refresh.</div>';
+  }
+}
+
+loadMap();
+</script>
+</body>
+</html>
