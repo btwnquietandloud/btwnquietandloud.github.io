@@ -104,6 +104,8 @@
   .pill[data-cat="body"].active { background: var(--accent6); color: #fff; }
   .pill[data-cat="planets"].active { background: var(--accent5); color: #fff; }
   .pill[data-cat="moons"].active { background: var(--accent2); color: #1a1932; }
+  .pill[data-cat="popCountries"].active { background: #f472b6; color: #fff; }
+  .pill[data-cat="popStates"].active { background: #34d399; color: #1a1932; }
 
   .controls {
     display: flex;
@@ -618,6 +620,124 @@ const DATA = {
       { name: "Styx (Pluto)", value: 10, emoji: "⚪", facts: ["Styx is Pluto's smallest known moon, discovered in 2012 by the Hubble Space Telescope!", "It's named after the river that separates the living world from the underworld in Greek mythology."] },
       { name: "Daphnis (Saturn)", value: 8, emoji: "⚪", facts: ["Tiny Daphnis creates beautiful wave patterns in Saturn's rings as it orbits through a gap!", "The waves it makes can be over half a mile high — caused by its tiny gravitational pull."] }
     ]
+  },
+  popCountries: {
+    label: "👥 Country Populations",
+    emoji: "🌍",
+    unit: "",
+    unitLabel: "people",
+    color: "#f472b6",
+    items: [
+      { name: "India", value: 1450935791, cc: "in", emoji: "🇮🇳", facts: ["India has about 480 people per square kilometer — like fitting 480 people on a football field-sized patch of land!", "India recently passed China to become the most populous country on Earth."] },
+      { name: "China", value: 1419321278, cc: "cn", emoji: "🇨🇳", facts: ["China has about 148 people per sq km — but most people live in the eastern half, making it feel much more crowded.", "China's population is actually shrinking for the first time in decades."] },
+      { name: "United States", value: 345426571, cc: "us", emoji: "🇺🇸", facts: ["The US has only about 37 people per sq km — one of the least dense major countries!", "If the US were as dense as India, it would have over 4.7 billion people."] },
+      { name: "Indonesia", value: 283487931, cc: "id", emoji: "🇮🇩", facts: ["Indonesia packs about 149 people per sq km across its 17,000 islands.", "The island of Java alone holds over 150 million people — it's one of the most crowded places on Earth!"] },
+      { name: "Pakistan", value: 251269164, cc: "pk", emoji: "🇵🇰", facts: ["Pakistan has about 285 people per sq km and is growing fast.", "Karachi alone has over 16 million people, making it one of the world's largest cities."] },
+      { name: "Nigeria", value: 232679478, cc: "ng", emoji: "🇳🇬", facts: ["Nigeria has about 252 people per sq km and is Africa's most populous nation.", "By 2050, Nigeria is expected to become the 3rd most populous country on Earth!"] },
+      { name: "Brazil", value: 211998573, cc: "br", emoji: "🇧🇷", facts: ["Brazil has only about 25 people per sq km — most of the Amazon region is nearly empty.", "São Paulo metro area has over 22 million people — it's the largest city in the Southern Hemisphere."] },
+      { name: "Bangladesh", value: 175882740, cc: "bd", emoji: "🇧🇩", facts: ["Bangladesh has about 1,265 people per sq km — one of the most densely packed countries on Earth!", "It's roughly the size of Iowa but has 175 million people compared to Iowa's 3 million."] },
+      { name: "Russia", value: 144820423, cc: "ru", emoji: "🇷🇺", facts: ["Russia has only about 9 people per sq km — it's the world's largest country but feels empty!", "Most Russians live west of the Ural Mountains; Siberia is vast but very sparsely populated."] },
+      { name: "Ethiopia", value: 132059767, cc: "et", emoji: "🇪🇹", facts: ["Ethiopia has about 120 people per sq km and is Africa's second most populous country.", "Addis Ababa, the capital, sits at over 7,700 feet — one of the highest capitals in the world."] },
+      { name: "Mexico", value: 130861007, cc: "mx", emoji: "🇲🇽", facts: ["Mexico has about 67 people per sq km, with massive Mexico City holding over 21 million.", "Mexico City is sinking about 20 inches per year because it was built on a lakebed!"] },
+      { name: "Japan", value: 123294513, cc: "jp", emoji: "🇯🇵", facts: ["Japan has about 338 people per sq km, but 73% of the land is mountainous and uninhabitable!", "Tokyo metro area has 37 million people — the largest metro area on Earth."] },
+      { name: "Philippines", value: 119106224, cc: "ph", emoji: "🇵🇭", facts: ["The Philippines has about 394 people per sq km spread across over 7,600 islands.", "Manila is one of the most densely populated cities on Earth with over 111,000 people per sq mile!"] },
+      { name: "Egypt", value: 112716598, cc: "eg", emoji: "🇪🇬", facts: ["Egypt has about 113 people per sq km overall, but 95% of people live along the Nile River!", "If you only count the inhabited land, the density is over 1,500 per sq km."] },
+      { name: "DR Congo", value: 108407721, cc: "cd", emoji: "🇨🇩", facts: ["DR Congo has about 46 people per sq km, but dense rainforest covers much of the country.", "Kinshasa has over 17 million people, making it the largest French-speaking city in the world."] },
+      { name: "Vietnam", value: 100987686, cc: "vn", emoji: "🇻🇳", facts: ["Vietnam has about 314 people per sq km — one of the densest countries in Southeast Asia.", "Ho Chi Minh City's motorbike traffic is legendary — there are about 45 million motorbikes in the country!"] },
+      { name: "Iran", value: 90442440, cc: "ir", emoji: "🇮🇷", facts: ["Iran has about 55 people per sq km, with vast deserts making much of the land uninhabited.", "Tehran, the capital, sits at the base of a massive mountain range with peaks over 12,000 feet."] },
+      { name: "Turkey", value: 87473805, cc: "tr", emoji: "🇹🇷", facts: ["Turkey has about 112 people per sq km, with Istanbul straddling two continents.", "Istanbul has about 16 million people — more than many entire European countries!"] },
+      { name: "Germany", value: 84552242, cc: "de", emoji: "🇩🇪", facts: ["Germany has about 240 people per sq km — the most populous country in the European Union.", "Despite its density, Germany has huge forests covering about a third of the country."] },
+      { name: "Thailand", value: 71801279, cc: "th", emoji: "🇹🇭", facts: ["Thailand has about 140 people per sq km, with Bangkok holding over 10 million.", "Bangkok's full name has 168 characters — locals just call it 'Krung Thep.'"] },
+      { name: "United Kingdom", value: 68350000, cc: "gb", emoji: "🇬🇧", facts: ["The UK has about 281 people per sq km — England alone is over 430 per sq km!", "London has about 9 million people packed into a city smaller than Jacksonville, Florida."] },
+      { name: "France", value: 66548530, cc: "fr", emoji: "🇫🇷", facts: ["France has about 104 people per sq km — much less dense than its neighbors Germany and UK.", "Paris packs 20,000+ people per sq km, while rural France feels wonderfully empty."] },
+      { name: "Tanzania", value: 67438106, cc: "tz", emoji: "🇹🇿", facts: ["Tanzania has about 71 people per sq km, but the Serengeti plains are nearly empty of humans.", "Dar es Salaam is one of the fastest-growing cities in Africa."] },
+      { name: "South Africa", value: 62027503, cc: "za", emoji: "🇿🇦", facts: ["South Africa has about 51 people per sq km — relatively low for such a major economy.", "Johannesburg is the largest city in the world not situated on a river, lake, or coastline."] },
+      { name: "Italy", value: 58761146, cc: "it", emoji: "🇮🇹", facts: ["Italy has about 196 people per sq km — pretty crowded for a country with so many mountains!", "Italy's population has been declining — it has one of the lowest birth rates in Europe."] },
+      { name: "Myanmar", value: 54179306, cc: "mm", emoji: "🇲🇲", facts: ["Myanmar has about 83 people per sq km, with dense jungle covering much of the interior.", "The old capital Mandalay is home to the world's longest teak bridge."] },
+      { name: "Kenya", value: 56100799, cc: "ke", emoji: "🇰🇪", facts: ["Kenya has about 97 people per sq km, but Nairobi is booming with over 5 million people.", "Kenya's population has roughly doubled in just the last 25 years!"] },
+      { name: "South Korea", value: 51741439, cc: "kr", emoji: "🇰🇷", facts: ["South Korea has about 527 people per sq km — one of the most densely packed countries on Earth!", "Seoul metro area alone holds about half the entire country's population."] },
+      { name: "Colombia", value: 52695952, cc: "co", emoji: "🇨🇴", facts: ["Colombia has about 46 people per sq km, with most people in the Andean highlands.", "Bogotá sits at 8,660 feet above sea level — one of the highest major cities in the world."] },
+      { name: "Spain", value: 47910526, cc: "es", emoji: "🇪🇸", facts: ["Spain has about 95 people per sq km, but the interior meseta is very sparsely settled.", "Madrid is the highest capital city in Europe at over 2,000 feet."] },
+      { name: "Argentina", value: 46654581, cc: "ar", emoji: "🇦🇷", facts: ["Argentina has only about 17 people per sq km — Patagonia in the south is nearly empty.", "About a third of all Argentines live in the Buenos Aires metro area."] },
+      { name: "Uganda", value: 49858296, cc: "ug", emoji: "🇺🇬", facts: ["Uganda has about 229 people per sq km and is one of the youngest countries — the median age is just 15!", "At current growth rates, Uganda's population could double in about 20 years."] },
+      { name: "Algeria", value: 46814308, cc: "dz", emoji: "🇩🇿", facts: ["Algeria has only about 20 people per sq km — the Sahara Desert makes up 80% of the country!", "Almost all 47 million people live in the narrow coastal strip along the Mediterranean."] },
+      { name: "Sudan", value: 48109006, cc: "sd", emoji: "🇸🇩", facts: ["Sudan has about 26 people per sq km, with most people along the Nile River.", "Khartoum, where the Blue and White Nile meet, is one of the hottest cities on Earth."] },
+      { name: "Iraq", value: 45504560, cc: "iq", emoji: "🇮🇶", facts: ["Iraq has about 105 people per sq km, concentrated along the Tigris and Euphrates rivers.", "Baghdad was once the largest city in the world during the Islamic Golden Age."] },
+      { name: "Ukraine", value: 36744636, cc: "ua", emoji: "🇺🇦", facts: ["Ukraine has about 61 people per sq km — down significantly due to recent conflict and emigration.", "Kyiv is one of the oldest cities in Eastern Europe, founded in the 5th century."] },
+      { name: "Canada", value: 40528396, cc: "ca", emoji: "🇨🇦", facts: ["Canada has only about 4 people per sq km — one of the least dense countries on Earth!", "90% of Canadians live within 100 miles of the US border; the vast north is nearly empty."] },
+      { name: "Poland", value: 36621847, cc: "pl", emoji: "🇵🇱", facts: ["Poland has about 124 people per sq km — similar density to Turkey.", "Warsaw was almost completely destroyed in WWII and was painstakingly rebuilt brick by brick."] },
+      { name: "Morocco", value: 37984655, cc: "ma", emoji: "🇲🇦", facts: ["Morocco has about 85 people per sq km, with the Atlas Mountains splitting habitable from desert.", "Casablanca has over 3.7 million people and is the economic capital of North Africa."] },
+      { name: "Saudi Arabia", value: 37473924, cc: "sa", emoji: "🇸🇦", facts: ["Saudi Arabia has only about 17 people per sq km — most of the country is uninhabited desert.", "Riyadh has grown from a small town to a mega-city of over 7 million in just 50 years!"] },
+      { name: "Uzbekistan", value: 36361943, cc: "uz", emoji: "🇺🇿", facts: ["Uzbekistan has about 81 people per sq km, mostly in fertile river valleys.", "The ancient Silk Road cities of Samarkand and Bukhara are some of the oldest in Central Asia."] },
+      { name: "Peru", value: 34352719, cc: "pe", emoji: "🇵🇪", facts: ["Peru has about 27 people per sq km — the Andes and Amazon keep most land empty.", "Lima, the capital, is built in a desert and almost never gets rain!"] },
+      { name: "Angola", value: 37885849, cc: "ao", emoji: "🇦🇴", facts: ["Angola has about 30 people per sq km, with Luanda being one of Africa's most expensive cities.", "Angola's population has tripled since 1990 — it's one of the fastest-growing countries."] },
+      { name: "Afghanistan", value: 42647492, cc: "af", emoji: "🇦🇫", facts: ["Afghanistan has about 65 people per sq km, but rugged mountains make much of it inaccessible.", "Kabul sits at 5,900 feet and has grown from 500,000 to over 4 million in just a few decades."] },
+      { name: "Malaysia", value: 34308525, cc: "my", emoji: "🇲🇾", facts: ["Malaysia has about 104 people per sq km, but Borneo's rainforests are very sparsely populated.", "Kuala Lumpur has about 8 million in its metro area and some of the tallest buildings in the world."] },
+      { name: "Mozambique", value: 33846517, cc: "mz", emoji: "🇲🇿", facts: ["Mozambique has about 42 people per sq km, with most people along the coast.", "The country stretches 1,500 miles along the Indian Ocean."] },
+      { name: "Ghana", value: 34121985, cc: "gh", emoji: "🇬🇭", facts: ["Ghana has about 143 people per sq km — one of the more densely populated West African nations.", "Accra is a fast-growing tech hub sometimes called 'Africa's Silicon Valley.'"] },
+      { name: "Nepal", value: 30896590, cc: "np", emoji: "🇳🇵", facts: ["Nepal has about 210 people per sq km — impressive for a country covered in the world's tallest mountains!", "Nepal is home to 8 of the world's 14 peaks above 8,000 meters, including Everest."] },
+      { name: "Yemen", value: 34449825, cc: "ye", emoji: "🇾🇪", facts: ["Yemen has about 65 people per sq km, with most people in the western highlands.", "Sana'a, the capital, sits at 7,500 feet and has buildings over 1,000 years old."] },
+      { name: "Australia", value: 26713205, cc: "au", emoji: "🇦🇺", facts: ["Australia has only about 3.5 people per sq km — one of the emptiest countries on Earth!", "About 90% of Australians live in cities along the coast; the interior 'Outback' is nearly deserted."] }
+    ]
+  },
+  popStates: {
+    label: "👥 State Populations",
+    emoji: "🇺🇸",
+    unit: "",
+    unitLabel: "people",
+    color: "#34d399",
+    items: [
+      { name: "California", value: 38965193, emoji: "🌴", facts: ["California has about 253 people per sq mile — but LA County alone packs in over 2,400 per sq mile!", "If California were its own country, its population would rank around 38th in the world."] },
+      { name: "Texas", value: 30976754, emoji: "🤠", facts: ["Texas has about 115 people per sq mile — it's growing so fast it adds a new person every 30 seconds.", "The Dallas-Fort Worth metro has over 8 million people — bigger than many US states!"] },
+      { name: "Florida", value: 23372215, emoji: "🐊", facts: ["Florida has about 416 people per sq mile — one of the densest large states.", "About 1,000 people move to Florida every single day!"] },
+      { name: "New York", value: 19571216, emoji: "🗽", facts: ["New York has about 410 people per sq mile — but Manhattan alone has 72,000 per sq mile!", "Upstate New York is surprisingly rural; most people are packed into the NYC metro area."] },
+      { name: "Pennsylvania", value: 12961683, emoji: "🔔", facts: ["Pennsylvania has about 291 people per sq mile — fairly dense for such a large state.", "Philadelphia and Pittsburgh anchor opposite ends, with rural farmland in between."] },
+      { name: "Illinois", value: 12549689, emoji: "🌆", facts: ["Illinois has about 228 people per sq mile, but the Chicago metro holds about 75% of the state's population.", "Southern Illinois feels like a completely different state from the bustling Chicago area."] },
+      { name: "Ohio", value: 11780017, emoji: "🧑‍🚀", facts: ["Ohio has about 287 people per sq mile — densely populated with several major cities.", "Ohio has 7 cities with over 100,000 people, more than most states."] },
+      { name: "Georgia", value: 11029227, emoji: "🍑", facts: ["Georgia has about 189 people per sq mile, with Atlanta metro holding over half the state's population.", "Metro Atlanta has grown by over 2 million people since 2000!"] },
+      { name: "North Carolina", value: 10835491, emoji: "✈️", facts: ["North Carolina has about 218 people per sq mile — the Charlotte and Raleigh metros are booming.", "The Research Triangle area is one of the fastest-growing tech hubs in the US."] },
+      { name: "Michigan", value: 10037261, emoji: "🏖️", facts: ["Michigan has about 178 people per sq mile, but the Upper Peninsula has only about 18!", "Detroit was once the 4th largest US city; it's now about a third of its peak population."] },
+      { name: "New Jersey", value: 9290841, emoji: "🎢", facts: ["New Jersey has about 1,263 people per sq mile — the MOST densely populated state in the US!", "You're never more than 5 miles from a gas station, store, or restaurant in New Jersey."] },
+      { name: "Virginia", value: 8683619, emoji: "🏛️", facts: ["Virginia has about 220 people per sq mile, heavily concentrated in the Northern Virginia/DC suburbs.", "Northern Virginia alone has more people than 14 entire US states!"] },
+      { name: "Washington", value: 8074727, emoji: "🌧️", facts: ["Washington has about 120 people per sq mile — the Seattle metro holds over half the state.", "Eastern Washington is dry farmland; western Washington gets all the famous rain."] },
+      { name: "Arizona", value: 7582323, emoji: "🏜️", facts: ["Arizona has about 64 people per sq mile — Phoenix metro has 5 million, but vast deserts are empty.", "Phoenix is the 5th largest city in the US and the hottest, yet it keeps growing!"] },
+      { name: "Tennessee", value: 7126489, emoji: "🎸", facts: ["Tennessee has about 168 people per sq mile, with Nashville and Memphis anchoring each end.", "Nashville is the fastest-growing large city in the Southeast."] },
+      { name: "Massachusetts", value: 7001399, emoji: "📚", facts: ["Massachusetts has about 901 people per sq mile — the 3rd most densely populated state!", "Greater Boston has more colleges and universities per capita than anywhere else in the world."] },
+      { name: "Indiana", value: 6862199, emoji: "🏎️", facts: ["Indiana has about 189 people per sq mile — fairly evenly spread across the state.", "Indianapolis is the largest city in the US not on a major waterway."] },
+      { name: "Missouri", value: 6196156, emoji: "🌊", facts: ["Missouri has about 90 people per sq mile — Kansas City and St. Louis hold most of the population.", "Missouri sits almost exactly in the center of the US population."] },
+      { name: "Maryland", value: 6180253, emoji: "🦀", facts: ["Maryland has about 636 people per sq mile — the 5th most densely populated state!", "Most of Maryland's population lives in the Baltimore-Washington corridor."] },
+      { name: "Colorado", value: 5913203, emoji: "🏔️", facts: ["Colorado has about 57 people per sq mile — the mountains are gorgeous but sparsely populated.", "The Denver metro has about 3 million people — over half the state lives there."] },
+      { name: "Wisconsin", value: 5910955, emoji: "🧀", facts: ["Wisconsin has about 110 people per sq mile — Milwaukee metro holds about a quarter of the state.", "The northern forests and lake regions are among the least populated parts of the Midwest."] },
+      { name: "Minnesota", value: 5737915, emoji: "🏒", facts: ["Minnesota has about 73 people per sq mile — the Twin Cities metro has over 3.6 million.", "Northern Minnesota is so empty that wolves and moose outnumber people in some areas!"] },
+      { name: "South Carolina", value: 5373555, emoji: "🌴", facts: ["South Carolina has about 173 people per sq mile — Charleston and the coast are the fastest-growing areas.", "Hilton Head and Myrtle Beach attract millions of tourists, swelling the population seasonally."] },
+      { name: "Alabama", value: 5108468, emoji: "🚀", facts: ["Alabama has about 99 people per sq mile — Birmingham metro is the largest area.", "Huntsville recently passed Birmingham as the state's largest city by population!"] },
+      { name: "Louisiana", value: 4573749, emoji: "🎷", facts: ["Louisiana has about 108 people per sq mile, with most people in the southern half.", "New Orleans' population dropped by half after Hurricane Katrina but has slowly recovered."] },
+      { name: "Kentucky", value: 4526154, emoji: "🐎", facts: ["Kentucky has about 114 people per sq mile — Louisville metro holds about a third of the state.", "Eastern Kentucky's Appalachian region is among the most sparsely populated areas east of the Mississippi."] },
+      { name: "Oregon", value: 4233358, emoji: "🌲", facts: ["Oregon has about 44 people per sq mile — Portland metro holds over half the population.", "Eastern Oregon is high desert with counties larger than some states but fewer than 10,000 people."] },
+      { name: "Oklahoma", value: 4019800, emoji: "🌪️", facts: ["Oklahoma has about 58 people per sq mile — Oklahoma City metro holds about a third of the state.", "Oklahoma City is one of the largest cities by area in the US — over 620 square miles!"] },
+      { name: "Connecticut", value: 3617176, emoji: "⛵", facts: ["Connecticut has about 741 people per sq mile — the 4th most densely populated state!", "Despite being tiny, it has both ultra-wealthy suburbs and struggling former industrial cities."] },
+      { name: "Utah", value: 3417734, emoji: "🏜️", facts: ["Utah has about 40 people per sq mile — the Wasatch Front corridor holds 80% of the population.", "Utah has the youngest median age of any state — about 31 years old."] },
+      { name: "Iowa", value: 3207004, emoji: "🌽", facts: ["Iowa has about 57 people per sq mile — evenly spread across the state's farmland.", "Iowa has been losing young people to bigger cities, but Des Moines is growing fast."] },
+      { name: "Nevada", value: 3194176, emoji: "🎰", facts: ["Nevada has about 29 people per sq mile — Las Vegas metro holds over 75% of the population!", "Outside of Las Vegas and Reno, Nevada is one of the emptiest states in the country."] },
+      { name: "Arkansas", value: 3067732, emoji: "💎", facts: ["Arkansas has about 58 people per sq mile — Northwest Arkansas is the fast-growing exception.", "The Walmart, Tyson, and J.B. Hunt headquarters make Northwest Arkansas surprisingly booming."] },
+      { name: "Mississippi", value: 2939690, emoji: "🏞️", facts: ["Mississippi has about 63 people per sq mile — the Delta region is especially rural.", "Mississippi has the lowest median household income in the US."] },
+      { name: "Kansas", value: 2937880, emoji: "🌾", facts: ["Kansas has about 36 people per sq mile — western Kansas counties are losing population.", "Johnson County (near Kansas City) has more people than the entire western half of the state!"] },
+      { name: "New Mexico", value: 2114371, emoji: "🌵", facts: ["New Mexico has about 17 people per sq mile — one of the least dense states.", "Albuquerque holds about half the state's population in its metro area."] },
+      { name: "Nebraska", value: 1978379, emoji: "🌽", facts: ["Nebraska has about 26 people per sq mile — Omaha and Lincoln hold over half the population.", "Many western Nebraska counties have fewer than 1 person per square mile!"] },
+      { name: "Idaho", value: 1964726, emoji: "🥔", facts: ["Idaho has about 23 people per sq mile — but Boise is one of the fastest-growing cities in America.", "Idaho's population grew 21% from 2010 to 2023 — the 2nd fastest growth rate in the US!"] },
+      { name: "West Virginia", value: 1770071, emoji: "🏔️", facts: ["West Virginia has about 74 people per sq mile and is one of the few states losing population.", "The mountainous terrain means many communities are isolated in narrow valleys."] },
+      { name: "Hawaii", value: 1435138, emoji: "🌺", facts: ["Hawaii has about 227 people per sq mile — but Oahu alone has about 1,600 per sq mile!", "About 70% of Hawaii's population lives on the island of Oahu."] },
+      { name: "New Hampshire", value: 1402054, emoji: "🏔️", facts: ["New Hampshire has about 155 people per sq mile — the southern part near Boston is densest.", "It's the fastest-growing state in New England as people flee higher-cost neighbors."] },
+      { name: "Maine", value: 1395722, emoji: "🦞", facts: ["Maine has about 44 people per sq mile — the vast northern woods are nearly uninhabited.", "Maine has the oldest median age of any US state — about 45 years old."] },
+      { name: "Montana", value: 1132812, emoji: "⛰️", facts: ["Montana has about 8 people per sq mile — you can drive for hours without seeing another car.", "Some Montana counties are larger than Connecticut but have fewer than 1,000 people!"] },
+      { name: "Rhode Island", value: 1095962, emoji: "⛵", facts: ["Rhode Island has about 1,061 people per sq mile — the 2nd most densely populated state!", "Despite having over a million people, you can drive across the entire state in about 45 minutes."] },
+      { name: "Delaware", value: 1031890, emoji: "⭐", facts: ["Delaware has about 508 people per sq mile — packed tight for such a small state.", "Northern Delaware feels like a Philly suburb; southern Delaware feels like rural countryside."] },
+      { name: "South Dakota", value: 919318, emoji: "🗿", facts: ["South Dakota has about 12 people per sq mile — Sioux Falls holds over a quarter of the population.", "West of the Missouri River, the density drops below 5 people per square mile."] },
+      { name: "North Dakota", value: 783926, emoji: "🌻", facts: ["North Dakota has about 11 people per sq mile — the oil boom brought thousands to the west.", "Fargo holds about a quarter of the state's population in its metro area."] },
+      { name: "Alaska", value: 733391, emoji: "🏔️", facts: ["Alaska has about 1.3 people per sq mile — the least densely populated state by far!", "There are parts of Alaska where the nearest neighbor is over 100 miles away."] },
+      { name: "Vermont", value: 647464, emoji: "🍁", facts: ["Vermont has about 70 people per sq mile — the 2nd least populous state.", "Burlington, the largest city, has only about 45,000 people — more like a cozy town!"] },
+      { name: "Wyoming", value: 576851, emoji: "🦬", facts: ["Wyoming has about 6 people per sq mile — the least populous state in the entire US!", "There are more pronghorn antelope in Wyoming than people."] }
+    ]
   }
 };
 
@@ -656,6 +776,7 @@ function renderPills() {
 
 // ── FORMAT NUMBER ──
 function fmt(n) {
+  if (n >= 1000000000) return (n / 1000000000).toFixed(2).replace(/\.?0+$/, '') + 'B';
   if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M';
   if (n >= 10000) return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
   return n.toLocaleString();
