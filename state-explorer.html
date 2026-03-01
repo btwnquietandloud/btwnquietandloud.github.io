@@ -353,6 +353,8 @@
     <button class="filter-btn" data-filter="nickname" onclick="setFilter('nickname')">&#x1F3F7;&#xFE0F; Nickname</button>
     <button class="filter-btn" data-filter="bird" onclick="setFilter('bird')">&#x1F426; State Bird</button>
     <button class="filter-btn" data-filter="sport" onclick="setFilter('sport')">&#x1F3C5; State Sport</button>
+    <button class="filter-btn" data-filter="faces" onclick="setFilter('faces')">&#x2B50; Famous Faces</button>
+    <button class="filter-btn" data-filter="funfact" onclick="setFilter('funfact')">&#x1F4A1; Fun Facts</button>
   </div>
 
   <div class="map-section">
@@ -361,6 +363,10 @@
       <div class="leg-item"><div class="swatch" style="background:#c75068;"></div>Republican (Female)</div>
       <div class="leg-item"><div class="swatch" style="background:#1e4a8a;"></div>Democrat (Male)</div>
       <div class="leg-item"><div class="swatch" style="background:#4a8ad4;"></div>Democrat (Female)</div>
+    </div>
+    <div class="gov-legend" id="sport-legend" style="display:none;">
+      <div class="leg-item"><div class="swatch" style="background:#b5621a;"></div>Official state sport</div>
+      <div class="leg-item"><div class="swatch" style="background:#1c2030;border-color:rgba(255,255,255,0.06);"></div>No designation</div>
     </div>
     <div id="map-container">
       <div class="loading"><div class="spinner"></div><div>Loading map...</div></div>
@@ -484,6 +490,112 @@ var sportData = {
   "56": { sport:"Rodeo", desc:"A competitive sport from cattle herding traditions, featuring bronc riding, bull riding, and roping.", origin:"Designated in 2003. Wyoming\u2019s Cheyenne Frontier Days is one of the world\u2019s largest outdoor rodeos." }
 };
 
+var facesData = {
+  "01": ["Rosa Parks", "Helen Keller", "Hank Aaron"],
+  "02": ["Jewel", "Curt Schilling", "Mario Chalmers"],
+  "04": ["Stevie Nicks", "Emma Stone", "Linda Ronstadt"],
+  "05": ["Johnny Cash", "Bill Clinton", "Maya Angelou"],
+  "06": ["Marilyn Monroe", "Steve Jobs", "Serena Williams"],
+  "08": ["Jack Dempsey", "Amy Adams", "Trey Parker"],
+  "09": ["Katharine Hepburn", "Mark Twain", "Michael Bolton"],
+  "10": ["Joe Biden", "Henry Heimlich", "Ryan Phillippe"],
+  "12": ["Jim Morrison", "Sidney Poitier", "Faye Dunaway"],
+  "13": ["Martin Luther King Jr.", "Ray Charles", "Julia Roberts"],
+  "15": ["Barack Obama", "Bruno Mars", "Jason Momoa"],
+  "16": ["Ezra Pound", "Picabo Street", "Lana Turner"],
+  "17": ["Abraham Lincoln", "Walt Disney", "Michael Jordan"],
+  "18": ["Michael Jackson", "James Dean", "David Letterman"],
+  "19": ["John Wayne", "Ashton Kutcher", "Herbert Hoover"],
+  "20": ["Amelia Earhart", "Dwight D. Eisenhower", "Buster Keaton"],
+  "21": ["Muhammad Ali", "Abraham Lincoln", "Johnny Depp"],
+  "22": ["Louis Armstrong", "Ellen DeGeneres", "Lil Wayne"],
+  "23": ["Stephen King", "Patrick Dempsey", "Henry Wadsworth Longfellow"],
+  "24": ["Harriet Tubman", "Babe Ruth", "Thurgood Marshall"],
+  "25": ["John F. Kennedy", "Edgar Allan Poe", "Matt Damon"],
+  "26": ["Henry Ford", "Madonna", "Stevie Wonder"],
+  "27": ["Prince", "Bob Dylan", "F. Scott Fitzgerald"],
+  "28": ["Elvis Presley", "Oprah Winfrey", "B.B. King"],
+  "29": ["Mark Twain", "Walt Disney", "Chuck Berry"],
+  "30": ["Evel Knievel", "David Lynch", "Michelle Williams"],
+  "31": ["Warren Buffett", "Fred Astaire", "Marlon Brando"],
+  "32": ["Andre Agassi", "Jenna Jameson", "Jack Kramer"],
+  "33": ["Adam Sandler", "Mandy Moore", "Robert Frost"],
+  "34": ["Frank Sinatra", "Bruce Springsteen", "Meryl Streep"],
+  "35": ["Neil Patrick Harris", "Demi Moore", "Jeff Bezos"],
+  "36": ["Jay-Z", "Lady Gaga", "Robert De Niro"],
+  "37": ["Michael Jordan", "Ava Gardner", "Nina Simone"],
+  "38": ["Angie Dickinson", "Phil Jackson", "Peggy Lee"],
+  "39": ["LeBron James", "Neil Armstrong", "Thomas Edison"],
+  "40": ["Brad Pitt", "Carrie Underwood", "Chuck Norris"],
+  "41": ["Matt Groening", "River Phoenix", "Tonya Harding"],
+  "42": ["Benjamin Franklin", "Andy Warhol", "Will Smith"],
+  "44": ["H.P. Lovecraft", "Mena Suvari", "Viola Davis"],
+  "45": ["James Brown", "Stephen Colbert", "Chadwick Boseman"],
+  "46": ["Crazy Horse", "Sitting Bull", "Tom Brokaw"],
+  "47": ["Dolly Parton", "Aretha Franklin", "Justin Timberlake"],
+  "48": ["Beyonce", "Willie Nelson", "Matthew McConaughey"],
+  "49": ["Philo Farnsworth", "Donny Osmond", "Roseanne Barr"],
+  "50": ["Bernie Sanders", "Calvin Coolidge", "Ben Cohen"],
+  "51": ["George Washington", "Thomas Jefferson", "Pharrell Williams"],
+  "53": ["Jimi Hendrix", "Kurt Cobain", "Bill Gates"],
+  "54": ["Chuck Yeager", "Brad Paisley", "Don Knotts"],
+  "55": ["Harry Houdini", "Willem Dafoe", "Frank Lloyd Wright"],
+  "56": ["Jackson Pollock", "Dick Cheney", "Curt Gowdy"]
+};
+
+var funFactData = {
+  "01": "Alabama is the only state that has declared an alcoholic beverage its official state drink \u2014 Conecuh Ridge Whiskey was named the official state spirit in 2004.",
+  "02": "Alaska is so large that if you placed it over the lower 48 states, it would stretch from coast to coast. It has more coastline than all other U.S. states combined.",
+  "04": "Arizona receives so much sunshine that it could theoretically power the entire United States with solar energy. The state averages over 300 sunny days per year.",
+  "05": "The only active diamond mine in the United States is in Arkansas. Crater of Diamonds State Park lets visitors keep any gems they find \u2014 including a 40-carat stone discovered in 1924.",
+  "06": "California\u2019s economy is so large that if it were an independent country, it would have the fifth-largest GDP in the world, ahead of India and the United Kingdom.",
+  "08": "Colorado has the highest average elevation of any state at 6,800 feet. The city of Leadville, at 10,152 feet, is the highest incorporated city in North America.",
+  "09": "The first phone book ever published was issued in New Haven, Connecticut in 1878. It was a single page with just 50 names and no phone numbers \u2014 you had to ask the operator.",
+  "10": "Delaware was the first state to ratify the U.S. Constitution on December 7, 1787, earning its nickname The First State. It is also the second-smallest state by area.",
+  "12": "St. Augustine, Florida, founded in 1565, is the oldest continuously occupied European settlement in the United States \u2014 predating the Jamestown settlement by 42 years.",
+  "13": "Georgia produces more peanuts than any other state \u2014 nearly half of all peanuts grown in the United States come from Georgia, earning it the title Peanut Capital of the World.",
+  "15": "Hawaii is the only U.S. state that grows coffee commercially, and it is the only state composed entirely of islands. The Hawaiian alphabet has just 13 letters.",
+  "16": "Idaho grows roughly one-third of all potatoes produced in the United States. The state\u2019s license plates are the only ones in the country that feature a vegetable.",
+  "17": "Chicago\u2019s reversal of the Chicago River in 1900 is considered one of the greatest engineering feats in history \u2014 they made an entire river flow backward to prevent sewage from contaminating the drinking water supply.",
+  "18": "Indiana hosts the largest single-day sporting event in the world: the Indianapolis 500. The race track, built in 1909, was originally paved with 3.2 million bricks.",
+  "19": "Iowa produces more corn and hogs than any other state. Roughly one-tenth of the entire U.S. food supply originates in Iowa.",
+  "20": "Dodge City, Kansas is the windiest city in the United States with average winds of 14 mph. The state is also flatter than a pancake \u2014 literally confirmed by a scientific study in 2003.",
+  "21": "Kentucky holds more bourbon than people. There are approximately 11 million barrels of bourbon aging in the state compared to a population of about 4.5 million.",
+  "22": "Louisiana is the only state that does not have counties \u2014 it is divided into parishes instead, a holdover from its French and Spanish colonial heritage.",
+  "23": "Maine produces about 90% of the nation\u2019s lobster supply. The state\u2019s coastline, if you straightened out all the inlets and peninsulas, would stretch about 3,478 miles.",
+  "24": "The Maryland State House in Annapolis is the oldest state capitol still in continuous legislative use. It also briefly served as the capitol of the entire United States from 1783 to 1784.",
+  "25": "Harvard University in Massachusetts, founded in 1636, is the oldest institution of higher education in the United States \u2014 it was established 140 years before America declared independence.",
+  "26": "Michigan has more lighthouses than any other state, with over 120 dotting its 3,288 miles of Great Lakes shoreline \u2014 the longest freshwater coastline in the world.",
+  "27": "Minnesota has 11,842 lakes of 10 acres or more, far exceeding its famous claim of 10,000 lakes. The state also has more shoreline than California, Florida, and Hawaii combined.",
+  "28": "Mississippi\u2019s namesake river carries roughly 436 billion gallons of water per day into the Gulf of Mexico. The river\u2019s drainage basin covers 41% of the continental United States.",
+  "29": "The ice cream cone was popularized at the 1904 World\u2019s Fair in St. Louis, Missouri, when an ice cream vendor ran out of cups and a nearby waffle maker rolled his waffles into cones.",
+  "30": "Montana has a population density of just 7.5 people per square mile, making it one of the least densely populated states. It has three times as many cattle as people.",
+  "31": "Kool-Aid was invented in Hastings, Nebraska in 1927. The state celebrates its creation with an annual Kool-Aid Days festival complete with the world\u2019s largest Kool-Aid stand.",
+  "32": "Las Vegas uses so much electricity that it is the brightest spot on Earth when viewed from space. Nevada\u2019s gambling industry generates over $13 billion in annual revenue.",
+  "33": "New Hampshire\u2019s Mount Washington held the world record for fastest wind speed ever recorded on the surface of the Earth \u2014 231 mph in 1934 \u2014 for over 60 years.",
+  "34": "New Jersey has the most dense system of highways and railroads in the United States, and more diners than any other state \u2014 earning it the unofficial title of Diner Capital of the World.",
+  "35": "New Mexico\u2019s Carlsbad Caverns contains a chamber so large that it could fit six football fields inside. The cave is also home to over 400,000 Brazilian free-tailed bats.",
+  "36": "New York City\u2019s subway system has 472 stations, making it the largest metro system in the world by number of stations. It operates 24 hours a day, 365 days a year.",
+  "37": "North Carolina\u2019s Outer Banks were the site of the Wright Brothers\u2019 first powered flight in 1903. The first flight lasted just 12 seconds and covered 120 feet.",
+  "38": "North Dakota produces more sunflowers than any other state and is also the top honey-producing state. Rugby, ND is the geographic center of the North American continent.",
+  "39": "Ohio has produced more U.S. Presidents than any other state except Virginia \u2014 eight presidents were born in Ohio, earning it the nickname Mother of Presidents.",
+  "40": "Oklahoma has more man-made lakes than any other state, with over 200 reservoirs. The state\u2019s name comes from Choctaw words meaning Red People.",
+  "41": "Crater Lake in Oregon is the deepest lake in the United States at 1,943 feet. It was formed by the collapse of a volcano about 7,700 years ago and is fed entirely by rain and snow.",
+  "42": "Pennsylvania is home to the oldest continuously operating zoo in the United States (Philadelphia Zoo, 1874) and Hershey, which produces over 70 million chocolate Kisses per day.",
+  "44": "Rhode Island is the smallest state but has one of the longest official names: State of Rhode Island and Providence Plantations, which was used until 2020.",
+  "45": "South Carolina\u2019s Angel Oak on Johns Island is estimated to be between 400 and 500 years old. Its canopy provides over 17,200 square feet of shade.",
+  "46": "Mount Rushmore in South Dakota took 14 years to carve and was never actually finished. The original design included the presidents carved to the waist.",
+  "47": "Tennessee\u2019s Great Smoky Mountains National Park is the most visited national park in the United States, drawing over 12 million visitors annually \u2014 roughly twice as many as the Grand Canyon.",
+  "48": "Texas is so large that the distance from El Paso to the Louisiana border is greater than the distance from El Paso to Los Angeles. King Ranch is larger than the entire state of Rhode Island.",
+  "49": "Utah\u2019s Great Salt Lake is the largest saltwater lake in the Western Hemisphere. It is so salty that swimmers float effortlessly, and it supports brine shrimp but no fish.",
+  "50": "Vermont produces more maple syrup than all other states combined, accounting for about 50% of U.S. production. It takes roughly 40 gallons of sap to make one gallon of syrup.",
+  "51": "Virginia has produced more U.S. Presidents than any other state \u2014 eight in total, including four of the first five. It was also home to both the first and last major battles of the Civil War.",
+  "53": "Washington state grows more apples than any other state, producing over 10 billion annually. It is also home to the rainiest spot in the continental U.S. \u2014 the Hoh Rain Forest gets 140 inches of rain per year.",
+  "54": "West Virginia is the only state located entirely within the Appalachian region. The New River, despite its name, is one of the oldest rivers in the world at an estimated 360 million years old.",
+  "55": "Wisconsin is known as America\u2019s Dairyland and produces over 3 billion pounds of cheese per year \u2014 more than any other state and roughly a quarter of all U.S. cheese.",
+  "56": "Yellowstone, mostly in Wyoming, was the world\u2019s first national park, established in 1872. It sits atop one of the largest active volcanic systems on Earth."
+};
+
 var currentFilter = 'governor';
 var selectedFips = null;
 var tooltip = document.getElementById('tooltip');
@@ -510,12 +622,18 @@ function applyMapColors() {
       };
       var c = colors[data.party];
       el.style('fill', data.female ? c.female : c.male);
+    } else if (currentFilter === 'sport') {
+      var s = sportData[d.id];
+      var hasSport = s && s.sport !== 'None designated';
+      el.style('fill', hasSport ? '#b5621a' : null);
     } else {
       el.style('fill', null);
     }
   });
   var legend = document.getElementById('gov-legend');
   if (legend) legend.style.display = currentFilter === 'governor' ? 'flex' : 'none';
+  var sportLegend = document.getElementById('sport-legend');
+  if (sportLegend) sportLegend.style.display = currentFilter === 'sport' ? 'flex' : 'none';
 }
 
 function buildContent(data, type, fips) {
@@ -533,6 +651,15 @@ function buildContent(data, type, fips) {
     var s = sportData[fips] || {};
     var isNone = s.sport === 'None designated';
     return '<div style="' + labelStyle + '">State Sport</div><div style="font-size:0.95rem;font-weight:600;color:' + (isNone ? 'var(--text-dim)' : '#f09856') + ';">' + (s.sport || 'Unknown') + '</div>';
+  }
+  if (type === 'faces') {
+    var f = facesData[fips] || [];
+    return '<div style="' + labelStyle + '">Famous Faces</div><div style="font-size:0.9rem;font-weight:500;color:#e0c370;line-height:1.6;">' + f.join(' &middot; ') + '</div>';
+  }
+  if (type === 'funfact') {
+    var ff = funFactData[fips] || '';
+    var preview = ff.length > 90 ? ff.substring(0, 90) + '...' : ff;
+    return '<div style="' + labelStyle + '">Fun Fact</div><div style="font-size:0.88rem;color:#7ce0b4;line-height:1.45;">' + preview + '</div>';
   }
   var h = '<div style="' + labelStyle + '">State Motto</div><div style="font-family:DM Serif Display,serif;font-size:1rem;color:var(--motto-gold);line-height:1.35;">\u201C' + data.motto + '\u201D</div>';
   if (data.mottoEn) h += '<div style="font-size:0.82rem;color:var(--text-dim);font-style:italic;margin-top:0.15rem;">' + data.mottoEn + '</div>';
@@ -584,6 +711,20 @@ function showPanel(fips) {
     html += '<div class="panel-label">State Sport</div><div style="font-size:1.2rem;font-weight:600;color:' + (isNone ? 'var(--text-dim)' : '#f09856') + ';margin-top:0.2rem;">' + (s.sport || 'Unknown') + '</div>';
     html += '<div style="font-size:0.88rem;color:var(--text-dim);margin-top:0.5rem;line-height:1.5;">' + (s.desc || '') + '</div>';
     html += '<div style="font-size:0.85rem;color:var(--text);margin-top:0.6rem;line-height:1.5;border-left:2px solid ' + (isNone ? 'var(--border)' : '#f09856') + ';padding-left:0.75rem;">' + (s.origin || '') + '</div>';
+  } else if (currentFilter === 'faces') {
+    var f = facesData[fips] || [];
+    html += '<div class="panel-label">Famous Faces</div>';
+    for (var i = 0; i < f.length; i++) {
+      var num = (i + 1);
+      html += '<div style="display:flex;align-items:center;gap:0.6rem;margin-top:' + (i === 0 ? '0.35rem' : '0.5rem') + ';">';
+      html += '<div style="min-width:24px;height:24px;border-radius:50%;background:linear-gradient(135deg,#c9973a,#e0c370);display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;color:#1a1d27;">' + num + '</div>';
+      html += '<div style="font-size:1.05rem;font-weight:500;color:#e0c370;">' + f[i] + '</div>';
+      html += '</div>';
+    }
+  } else if (currentFilter === 'funfact') {
+    var ff = funFactData[fips] || '';
+    html += '<div class="panel-label">Fun Fact</div>';
+    html += '<div style="font-size:1rem;color:#7ce0b4;line-height:1.6;margin-top:0.35rem;">' + ff + '</div>';
   }
 
   document.getElementById('panel-content').innerHTML = html;
