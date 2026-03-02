@@ -328,6 +328,107 @@
   }
   .fact-text { font-size: 14px; color: var(--text); margin: 4px 0 0; line-height: 1.6; }
 
+  /* ── Trivia ── */
+  .trivia-start-screen {
+    text-align: center; padding: 60px 24px;
+    background: var(--bg-card); border-radius: 24px;
+    border: 1px solid var(--border);
+  }
+  .trivia-start-icon { font-size: 72px; margin-bottom: 20px; animation: pulseGlow 3s ease-in-out infinite; }
+  .trivia-start-title {
+    font-family: 'Fredoka', sans-serif; font-size: 24px;
+    color: var(--text); margin: 0 0 12px;
+  }
+  .trivia-start-desc {
+    font-size: 15px; color: var(--text-muted); margin: 0 0 28px;
+    max-width: 420px; margin-left: auto; margin-right: auto; line-height: 1.6;
+  }
+  .trivia-action-btn {
+    font-family: 'Fredoka', sans-serif; font-size: 16px; font-weight: 600;
+    padding: 14px 36px; border: none; border-radius: 14px;
+    background: linear-gradient(135deg, #e040a0, #ff6b35); color: #fff;
+    cursor: pointer; transition: all 0.25s ease;
+    box-shadow: 0 4px 20px rgba(224,64,160,0.3);
+  }
+  .trivia-action-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(224,64,160,0.4); }
+  .trivia-hud {
+    display: flex; justify-content: center; gap: 16px;
+    margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .trivia-hud-item {
+    background: var(--bg-card); border-radius: 14px; padding: 12px 20px;
+    border: 1px solid var(--border); text-align: center; min-width: 90px;
+  }
+  .trivia-hud-label { display: block; font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; font-family: 'Fredoka', sans-serif; }
+  .trivia-hud-value { display: block; font-family: 'Bungee', cursive; font-size: 18px; color: var(--text); margin-top: 4px; }
+  .trivia-progress-bar {
+    width: 100%; height: 6px; background: var(--border); border-radius: 3px;
+    margin-bottom: 24px; overflow: hidden;
+  }
+  .trivia-progress-fill {
+    height: 100%; border-radius: 3px; transition: width 0.4s ease;
+    background: linear-gradient(90deg, #e040a0, #ff6b35, #ffd166);
+    width: 0%;
+  }
+  .trivia-card {
+    background: var(--bg-card); border-radius: 20px; padding: 32px;
+    border: 1px solid var(--border); max-width: 680px; margin: 0 auto;
+  }
+  .trivia-category {
+    font-family: 'Fredoka', sans-serif; font-size: 11px; font-weight: 600;
+    color: #e040a0; text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 12px;
+  }
+  .trivia-question {
+    font-family: 'Fredoka', sans-serif; font-size: 20px; font-weight: 600;
+    color: var(--text); margin: 0 0 24px; line-height: 1.5;
+  }
+  .trivia-options { display: flex; flex-direction: column; gap: 10px; }
+  .trivia-option {
+    width: 100%; text-align: left; padding: 16px 20px;
+    background: rgba(255,255,255,0.03); border: 2px solid var(--border);
+    border-radius: 14px; cursor: pointer;
+    font-family: 'Nunito', sans-serif; font-size: 15px; color: var(--text);
+    transition: all 0.2s ease; display: flex; align-items: center; gap: 12px;
+  }
+  .trivia-option:hover:not(.disabled) { border-color: #e040a066; background: rgba(224,64,160,0.05); transform: translateX(4px); }
+  .trivia-option .opt-letter {
+    font-family: 'Bungee', cursive; font-size: 14px; color: var(--text-dim);
+    width: 32px; height: 32px; border-radius: 10px; display: flex;
+    align-items: center; justify-content: center; flex-shrink: 0;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+    transition: all 0.2s ease;
+  }
+  .trivia-option:hover:not(.disabled) .opt-letter { border-color: #e040a066; color: #e040a0; }
+  .trivia-option.correct {
+    border-color: #06d6a0; background: rgba(6,214,160,0.1);
+    animation: fadeUp 0.3s ease;
+  }
+  .trivia-option.correct .opt-letter { background: #06d6a0; color: #fff; border-color: #06d6a0; }
+  .trivia-option.wrong {
+    border-color: #ff4757; background: rgba(255,71,87,0.1);
+    animation: fadeUp 0.3s ease;
+  }
+  .trivia-option.wrong .opt-letter { background: #ff4757; color: #fff; border-color: #ff4757; }
+  .trivia-option.disabled { cursor: default; opacity: 0.5; pointer-events: none; }
+  .trivia-option.disabled.correct { opacity: 1; }
+  .trivia-option.disabled.wrong { opacity: 1; }
+  .trivia-feedback {
+    margin-top: 20px; padding: 16px 20px; border-radius: 14px;
+    font-family: 'Nunito', sans-serif; font-size: 14px; line-height: 1.6;
+  }
+  .trivia-feedback.correct-fb { background: rgba(6,214,160,0.08); border: 1px solid rgba(6,214,160,0.2); color: #06d6a0; }
+  .trivia-feedback.wrong-fb { background: rgba(255,71,87,0.08); border: 1px solid rgba(255,71,87,0.2); color: #ff8090; }
+  .trivia-next-btn {
+    margin-top: 20px; width: 100%; font-size: 15px; padding: 14px;
+  }
+  @keyframes shakeWrong {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+  }
+  .shake { animation: shakeWrong 0.4s ease; }
+
   /* ── Footer ── */
   footer {
     text-align: center; margin-top: 48px; padding: 20px;
@@ -348,6 +449,7 @@
     <button class="tab-btn" data-tab="timeline"><span class="icon">📜</span> Timeline</button>
     <button class="tab-btn" data-tab="characters"><span class="icon">👥</span> Characters</button>
     <button class="tab-btn" data-tab="facts"><span class="icon">🎲</span> Fun Facts</button>
+    <button class="tab-btn" data-tab="trivia"><span class="icon">🧠</span> Trivia</button>
   </nav>
 
   <!-- ════════════ HOME ════════════ -->
@@ -421,6 +523,46 @@
     <p class="section-sub">Things you might not know about BFDI</p>
     <div class="filter-row" id="filter-row"></div>
     <div class="facts-grid" id="facts-grid"></div>
+  </div>
+
+  <!-- ════════════ TRIVIA ════════════ -->
+  <div class="section" id="sec-trivia">
+    <h2 class="section-heading" style="color:#e040a0">🧠 BFDI Trivia Challenge</h2>
+    <p class="section-sub">Test your knowledge of the BFDI universe!</p>
+    <div id="trivia-container">
+      <!-- Start screen -->
+      <div id="trivia-start" class="trivia-start-screen">
+        <div class="trivia-start-icon">🏝️</div>
+        <h3 class="trivia-start-title">Ready to Test Your BFDI Knowledge?</h3>
+        <p class="trivia-start-desc">100 questions covering characters, seasons, lore, and behind-the-scenes history. How many can you get right?</p>
+        <button id="trivia-start-btn" class="trivia-action-btn">Start Trivia</button>
+      </div>
+      <!-- Game screen (hidden initially) -->
+      <div id="trivia-game" style="display:none;">
+        <div class="trivia-hud">
+          <div class="trivia-hud-item">
+            <span class="trivia-hud-label">Question</span>
+            <span class="trivia-hud-value" id="trivia-qnum">1 / 100</span>
+          </div>
+          <div class="trivia-hud-item">
+            <span class="trivia-hud-label">Score</span>
+            <span class="trivia-hud-value" id="trivia-score">0</span>
+          </div>
+          <div class="trivia-hud-item">
+            <span class="trivia-hud-label">Streak</span>
+            <span class="trivia-hud-value" id="trivia-streak">🔥 0</span>
+          </div>
+        </div>
+        <div class="trivia-progress-bar"><div class="trivia-progress-fill" id="trivia-progress"></div></div>
+        <div class="trivia-card" id="trivia-card">
+          <div class="trivia-category" id="trivia-category">Characters</div>
+          <p class="trivia-question" id="trivia-question">Loading...</p>
+          <div class="trivia-options" id="trivia-options"></div>
+          <div class="trivia-feedback" id="trivia-feedback" style="display:none;"></div>
+          <button class="trivia-action-btn trivia-next-btn" id="trivia-next" style="display:none;">Next Question →</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -725,6 +867,261 @@ document.querySelectorAll('.quick-card[data-nav]').forEach(card => {
   });
 
   renderCards('All');
+})();
+
+// ═══════════ TRIVIA ENGINE ═══════════
+(function initTrivia() {
+  // 100 trivia questions — sourced from characters, timeline, fun facts, and lore
+  const triviaDB = [
+    // ── Characters: Identity & Roles (1-20) ──
+    { q:"Who won Season 1 of BFDI?", a:"Firey", d:["Leafy","Bubble","Flower"], cat:"Characters" },
+    { q:"Who won Battle for BFB (Season 4)?", a:"Flower", d:["Firey","Leafy","Woody"], cat:"Characters" },
+    { q:"Which character is known for never speaking a single word?", a:"Teardrop", d:["Rocky","Ice Cube","David"], cat:"Characters" },
+    { q:"What is David's only line of dialogue?", a:"Aw, seriously?", d:["Oh no!","Why me?","Not again!"], cat:"Characters" },
+    { q:"Which character stole Dream Island with fake money?", a:"Leafy", d:["Flower","Pencil","Blocky"], cat:"Characters" },
+    { q:"Who is the host of Battle for BFB?", a:"Four", d:["Two","Announcer","X"], cat:"Characters" },
+    { q:"Which character runs 'Blocky's Funny Doings International'?", a:"Blocky", d:["Eraser","Pen","Snowball"], cat:"Characters" },
+    { q:"What species are Four, X, and Two?", a:"Algebralians", d:["Numeroids","Mathlings","Digitals"], cat:"Lore" },
+    { q:"Who is the host of The Power of Two?", a:"Two", d:["Four","X","Announcer"], cat:"Characters" },
+    { q:"Which character uses they/them pronouns and is named after a reward?", a:"Winner", d:["Price Tag","Loser","Trophy"], cat:"Characters" },
+    { q:"Who leads the FreeSmart alliance?", a:"Pencil", d:["Match","Bubble","Ruby"], cat:"Characters" },
+    { q:"Which character has a distinctive accent that replaces vowels with 'oi'?", a:"Bubble", d:["Leafy","Match","Ruby"], cat:"Characters" },
+    { q:"What is Bubble's catchphrase?", a:"Yoylecake!", d:["Oh no!","Popping time!","Bubblicious!"], cat:"Characters" },
+    { q:"Which character will slap anyone who calls her 'Needy'?", a:"Needle", d:["Pin","Flower","Pencil"], cat:"Characters" },
+    { q:"Who is Firey's arch-nemesis that he constantly slap-fights?", a:"Coiny", d:["Snowball","Leafy","Blocky"], cat:"Characters" },
+    { q:"Which character is a literal black hole but one of the gentlest?", a:"Black Hole", d:["Lightning","Remote","TV"], cat:"Characters" },
+    { q:"Who temporarily gained Four's powers when Four was absorbed into him?", a:"Donut", d:["Loser","Gelatin","Firey"], cat:"Characters" },
+    { q:"What is Golf Ball best known for building?", a:"An underground factory", d:["A spaceship","A recovery center","A robot army"], cat:"Characters" },
+    { q:"Which character speaks entirely in rapid, unintelligible gibberish?", a:"Dora", d:["David","Rocky","Teardrop"], cat:"Characters" },
+    { q:"Despite being named 'Loser', how do other contestants feel about him?", a:"They adore him", d:["They pity him","They ignore him","They fear him"], cat:"Characters" },
+
+    // ── Characters: Traits & Trivia (21-40) ──
+    { q:"Which character's main ability is vomiting?", a:"Rocky", d:["Spongy","Bomby","Gelatin"], cat:"Characters" },
+    { q:"Match is known for saying which word constantly?", a:"Like", d:["Totally","Whatever","Obviously"], cat:"Characters" },
+    { q:"Who is Tennis Ball's best friend?", a:"Golf Ball", d:["Basketball","Coiny","Firey"], cat:"Characters" },
+    { q:"Which character was originally terrified of everything but overcame his fears in BFB?", a:"Woody", d:["Spongy","David","Rocky"], cat:"Characters" },
+    { q:"What item does Pin own that becomes a key plot device?", a:"A Gratitude Token", d:["A Win Token","A Dream Map","A Recovery Card"], cat:"Characters" },
+    { q:"Which character is frequently rejected from teams due to his large size?", a:"Spongy", d:["Blocky","Snowball","Rocky"], cat:"Characters" },
+    { q:"Who are the three members of the 'cool guys' trio?", a:"Pen, Eraser, and Blocky", d:["Firey, Coiny, and Snowball","Tennis Ball, Golf Ball, and Rocky","Pen, Coiny, and Match"], cat:"Characters" },
+    { q:"Which character has 'freeze juice' that can freeze anything?", a:"Gelatin", d:["Ice Cube","Snowball","Bubble"], cat:"Characters" },
+    { q:"What is Puffball's unique physical ability?", a:"She can fly", d:["She can turn invisible","She can stretch","She can teleport"], cat:"Characters" },
+    { q:"What does Yellow Face create as a recurring segment?", a:"Fake product commercials", d:["News reports","Music videos","Cooking shows"], cat:"Characters" },
+    { q:"Who confronted Firey about lying about not remembering Leafy?", a:"Clock", d:["Coiny","Pin","Golf Ball"], cat:"Characters" },
+    { q:"Which character is Loser's biggest fan?", a:"Cake", d:["Bubble","Woody","Bell"], cat:"Characters" },
+    { q:"What happens to Fries when other characters eat his fries?", a:"He gets extremely angry", d:["He grows new ones","He shrinks","He doesn't notice"], cat:"Characters" },
+    { q:"Which character looks nearly identical to Coiny?", a:"Nickel", d:["Firey","Pin","Donut"], cat:"Characters" },
+    { q:"What did Pencil order Lightning to do in BFB?", a:"Electrocute people she disliked", d:["Guard the alliance","Power a machine","Race against Four"], cat:"Characters" },
+    { q:"How did the Announcer arrive in BFDI Episode 1?", a:"Dropped from the sky", d:["Rose from underground","Walked in from offscreen","Was built by Golf Ball"], cat:"Characters" },
+    { q:"Which character's diary being stolen became a major BFB plot point?", a:"Donut", d:["Book","Four","Leafy"], cat:"Characters" },
+    { q:"Who was the first contestant eliminated from BFDI Season 1?", a:"Flower", d:["Spongy","David","Woody"], cat:"Characters" },
+    { q:"Taco's apparent 'betrayal' in BFB was actually what?", a:"A misunderstanding", d:["A planned strategy","A prank by Blocky","An accident"], cat:"Characters" },
+    { q:"Which character uses recycled audio clips for most of their dialogue?", a:"Ice Cube", d:["Teardrop","David","Rocky"], cat:"Characters" },
+
+    // ── Seasons & Structure (41-55) ──
+    { q:"How many seasons does BFDI have as of 2026?", a:"6", d:["4","5","7"], cat:"Seasons" },
+    { q:"What does BFDIA stand for?", a:"Battle for Dream Island Again", d:["Battle for Dream Island Adventures","Battle for Dream Island Aftermath","Battle for Dream Island Alliance"], cat:"Seasons" },
+    { q:"What does IDFB stand for?", a:"Island Dream For Battle", d:["I Don't Feel Bad","Intense Dream for Battle","Imaginary Dream for Battle"], cat:"Seasons" },
+    { q:"How many episodes did BFDI Season 1 have?", a:"25", d:["20","30","15"], cat:"Seasons" },
+    { q:"How many contestants competed in Battle for BFB at the start?", a:"64", d:["32","48","40"], cat:"Seasons" },
+    { q:"What caused the BFB/TPOT split?", a:"Two arrived and offered their powers as a prize", d:["Four quit the show","Contestants voted to split","The Announcer returned"], cat:"Seasons" },
+    { q:"How many contestants left BFB to join The Power of Two?", a:"40", d:["32","20","48"], cat:"Seasons" },
+    { q:"How many contestants remained in BFB after the split?", a:"14", d:["24","16","10"], cat:"Seasons" },
+    { q:"What is the prize in BFDI Season 1?", a:"Dream Island", d:["A million dollars","A yoyleberry farm","A speaker box"], cat:"Seasons" },
+    { q:"What is the prize in BFDIA?", a:"A farm", d:["Dream Island","A castle","Four's powers"], cat:"Seasons" },
+    { q:"What is BFDIE about?", a:"What the Announcer was doing during the original BFDI", d:["A prequel set before Season 1","Characters on a different planet","The aftermath of BFB"], cat:"Seasons" },
+    { q:"BFDI Season 1 was unique for having what kind of release schedule?", a:"Perfectly consistent monthly episodes", d:["Weekly episodes","Random sporadic releases","Bi-weekly episodes"], cat:"Seasons" },
+    { q:"Which BFDI season had only a single episode before hiatus?", a:"IDFB (Season 3)", d:["BFDIA","BFB","TPOT"], cat:"Seasons" },
+    { q:"In which season do viewers vote to SAVE characters instead of eliminate them?", a:"BFB (starting Episode 17)", d:["BFDI from the beginning","TPOT","BFDIA"], cat:"Seasons" },
+    { q:"What is the name of the fictional world where BFDI takes place?", a:"Goiky", d:["Dreamville","Objectopia","Yoyleland"], cat:"Lore" },
+
+    // ── Timeline & History (56-75) ──
+    { q:"What year did the first episode of BFDI premiere?", a:"2010", d:["2008","2011","2009"], cat:"History" },
+    { q:"On what date did BFDI Episode 1 premiere?", a:"January 1, 2010", d:["March 15, 2010","June 1, 2009","December 25, 2010"], cat:"History" },
+    { q:"What year was the jacknjellify YouTube channel created?", a:"2008", d:["2009","2010","2007"], cat:"History" },
+    { q:"Who created Battle for Dream Island?", a:"Cary and Michael Huang", d:["Adam Katz and Justin Chapman","Joseph Pak and Samuel Thornbury","Alex and Brian Smith"], cat:"History" },
+    { q:"How old were the Huang twins when they started making BFDI?", a:"12 years old", d:["15 years old","10 years old","18 years old"], cat:"History" },
+    { q:"What software was BFDI originally animated in?", a:"Adobe Flash", d:["Toon Boom","After Effects","Blender"], cat:"History" },
+    { q:"What trip inspired the Huang twins to create BFDI?", a:"A trip to Hawaii", d:["A trip to Japan","A trip to New York","A trip to London"], cat:"History" },
+    { q:"What comic series was BFDI based on?", a:"Total Firey Island", d:["Object World","Dream Island Comics","Firey and Friends"], cat:"History" },
+    { q:"How many years was BFDIA on hiatus before returning?", a:"About 10 years (2013-2023)", d:["3 years","5 years","7 years"], cat:"History" },
+    { q:"Why did BFDIA go on hiatus in 2013?", a:"The twins needed to focus on school", d:["They ran out of ideas","YouTube suspended their channel","They started a new show"], cat:"History" },
+    { q:"What university did Cary Huang attend?", a:"Stanford University", d:["MIT","UC Berkeley","Harvard"], cat:"History" },
+    { q:"What did Michael Huang study in college?", a:"Film at UC Berkeley", d:["Animation at CalArts","Computer Science at Stanford","Art at UCLA"], cat:"History" },
+    { q:"When did jacknjellify hit 1 million subscribers?", a:"April 2021", d:["January 2020","December 2019","June 2022"], cat:"History" },
+    { q:"When did jacknjellify hit 2 million subscribers?", a:"November 2023", d:["March 2022","January 2024","August 2023"], cat:"History" },
+    { q:"What happened to jacknjellify's AdSense in 2014?", a:"It was suspended for an unknown reason", d:["It was hacked","They voluntarily paused it","It was upgraded"], cat:"History" },
+    { q:"What was the first object show channel to reach 1 million subscribers?", a:"jacknjellify", d:["Inanimate Insanity","AnimationEpic","Object Mayhem"], cat:"History" },
+    { q:"Where did jacknjellify open an office in 2023?", a:"Santa Monica, California", d:["San Francisco","Los Angeles downtown","New York City"], cat:"History" },
+    { q:"In what year did BFDI finally get a Wikipedia article?", a:"2025", d:["2020","2023","2018"], cat:"History" },
+    { q:"What non-BFDI video by the Huang twins went viral on Newgrounds and ABC News?", a:"Scale of the Universe", d:["Marble Race","Object Battle","Firey Music Video"], cat:"History" },
+    { q:"When did BFDI first have an episode screened in movie theaters?", a:"2023", d:["2021","2024","2019"], cat:"History" },
+
+    // ── Lore & Mechanics (76-88) ──
+    { q:"What machines are used to bring dead characters back to life?", a:"Recovery Centers", d:["Respawn Machines","Life Restorers","Dream Machines"], cat:"Lore" },
+    { q:"What is the name of the Win Token's function?", a:"It erases half of a contestant's elimination votes", d:["It grants immunity","It eliminates another player","It doubles prize money"], cat:"Lore" },
+    { q:"What did Leafy use to steal Dream Island?", a:"Fake money / counterfeit cash", d:["A teleporter","Golf Ball's factory","A Win Token"], cat:"Lore" },
+    { q:"What does Four's 'screech' do to contestants?", a:"Kills them", d:["Freezes them","Teleports them","Makes them shrink"], cat:"Lore" },
+    { q:"What are X's most treasured possessions?", a:"Baskets", d:["Gems","Books","Hats"], cat:"Lore" },
+    { q:"What is the 'TLC' that eliminated contestants are sent to?", a:"Tiny Loser Chamber", d:["Total Loser Camp","The Last Chance","Terrible Losers Club"], cat:"Lore" },
+    { q:"What is the 'LOL' in BFDI?", a:"Locker of Losers", d:["Land of Losers","League of Losers","Lost Object Limbo"], cat:"Lore" },
+    { q:"What is Yoyleland?", a:"A distant land where Leafy was stranded after Season 1", d:["The host's home","A dream sequence location","A contestant-built city"], cat:"Lore" },
+    { q:"What did Firey build to apologize to Leafy in BFB?", a:"A ferris wheel", d:["A bridge","A house","A boat"], cat:"Lore" },
+    { q:"What was the Announcer secretly doing during the events of BFDI Season 1?", a:"Hosting another game elsewhere (revealed in BFDIE)", d:["Building a new Dream Island","Training new contestants","Sleeping"], cat:"Lore" },
+    { q:"Why did Firey pretend not to know Leafy in BFDIA?", a:"To protect his reputation after she stole Dream Island", d:["He genuinely forgot her","Four erased his memory","He was replaced by a clone"], cat:"Lore" },
+    { q:"What happens when Bubble pops?", a:"She can be recovered by the Bubble Recovery Center", d:["She's gone forever","She reforms after 24 hours","Another Bubble replaces her"], cat:"Lore" },
+    { q:"How do viewers participate in BFDI eliminations?", a:"By voting via YouTube likes/dislikes or comments", d:["Through a mobile app","Via email surveys","On a separate website"], cat:"Lore" },
+
+    // ── Fun Facts & Meta (89-100) ──
+    { q:"What is the BFDI fandom collectively known as?", a:"The Object Show Community (OSC)", d:["The Dream Island Fanclub","BFDI Nation","The Object Army"], cat:"Meta" },
+    { q:"Which show is considered BFDI's 'unofficial sister show'?", a:"Inanimate Insanity", d:["Object Overload","Brawl of the Objects","Challenge to Win"], cat:"Meta" },
+    { q:"Approximately how many total views does jacknjellify have?", a:"Over 2 billion", d:["500 million","1 billion","750 million"], cat:"Meta" },
+    { q:"What genre did BFDI help create?", a:"Object shows", d:["Reality animation","Voting cartoons","Game show parodies"], cat:"Meta" },
+    { q:"BFDI is a parody of which TV genre?", a:"Game shows (Survivor / Total Drama Island)", d:["Soap operas","Cooking competitions","Talent shows"], cat:"Meta" },
+    { q:"Which Kuwaiti TV show featured Ice Cube in its opening?", a:"Aareel Bo Adnan", d:["Kuwait Cartoon Hour","Al Majid Show","Sabah Al Khair"], cat:"Meta" },
+    { q:"What platform was BFDIA 5b released as?", a:"A platformer video game", d:["A mobile app","A Flash quiz","A Roblox game"], cat:"Meta" },
+    { q:"How long is the BFDI Season 1 full compilation video?", a:"3 hours and 50 minutes", d:["2 hours","5 hours","1 hour and 30 minutes"], cat:"Meta" },
+    { q:"Which character appeared in a Kuwaiti TV program during Ramadan 2023?", a:"Ice Cube", d:["Four","Firey","Bubble"], cat:"Meta" },
+    { q:"What award did jacknjellify win in 2016 from Wikia?", a:"The Food Award", d:["Best Animation","Fan Choice Award","Web Series of the Year"], cat:"Meta" },
+    { q:"What is the name of the first BFDI episode?", a:"Take the Plunge", d:["Dream Island Awaits","The Big Battle","Object Showdown"], cat:"Meta" },
+    { q:"Roughly how many subscribers does jacknjellify have as of 2025?", a:"Over 3 million", d:["1 million","500,000","5 million"], cat:"Meta" },
+  ];
+
+  // ── Shuffle utility ──
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  // ── Game State ──
+  let queue = [];
+  let currentQ = null;
+  let questionNum = 0;
+  let score = 0;
+  let streak = 0;
+  let bestStreak = 0;
+  let answered = false;
+
+  const els = {
+    startScreen: document.getElementById('trivia-start'),
+    game: document.getElementById('trivia-game'),
+    startBtn: document.getElementById('trivia-start-btn'),
+    qnum: document.getElementById('trivia-qnum'),
+    score: document.getElementById('trivia-score'),
+    streak: document.getElementById('trivia-streak'),
+    progress: document.getElementById('trivia-progress'),
+    category: document.getElementById('trivia-category'),
+    question: document.getElementById('trivia-question'),
+    options: document.getElementById('trivia-options'),
+    feedback: document.getElementById('trivia-feedback'),
+    next: document.getElementById('trivia-next'),
+  };
+
+  function startGame() {
+    els.startScreen.style.display = 'none';
+    els.game.style.display = 'block';
+    queue = shuffle(triviaDB);
+    questionNum = 0; score = 0; streak = 0; bestStreak = 0;
+    loadQuestion();
+  }
+
+  function loadQuestion() {
+    // If we've exhausted all questions, reshuffle
+    if (queue.length === 0) queue = shuffle(triviaDB);
+
+    currentQ = queue.pop();
+    questionNum++;
+    answered = false;
+
+    // Update HUD
+    const displayNum = ((questionNum - 1) % 100) + 1;
+    els.qnum.textContent = displayNum + ' / 100';
+    els.score.textContent = score;
+    els.streak.textContent = '🔥 ' + streak;
+    els.progress.style.width = (displayNum / 100 * 100) + '%';
+    els.category.textContent = currentQ.cat;
+    els.question.textContent = currentQ.q;
+
+    // Build shuffled options
+    const options = shuffle([currentQ.a, ...currentQ.d]);
+    const letters = ['A', 'B', 'C', 'D'];
+    els.options.innerHTML = '';
+    options.forEach((opt, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'trivia-option';
+      btn.innerHTML = `<span class="opt-letter">${letters[i]}</span><span>${opt}</span>`;
+      btn.addEventListener('click', () => handleAnswer(btn, opt));
+      els.options.appendChild(btn);
+    });
+
+    // Hide feedback and next
+    els.feedback.style.display = 'none';
+    els.next.style.display = 'none';
+
+    // Scroll card into view
+    document.getElementById('trivia-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function handleAnswer(btn, chosen) {
+    if (answered) return;
+    answered = true;
+
+    const isCorrect = chosen === currentQ.a;
+    const allBtns = els.options.querySelectorAll('.trivia-option');
+
+    // Disable all buttons and mark correct/wrong
+    allBtns.forEach(b => {
+      b.classList.add('disabled');
+      const text = b.querySelector('span:last-child').textContent;
+      if (text === currentQ.a) b.classList.add('correct');
+    });
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      score++;
+      streak++;
+      if (streak > bestStreak) bestStreak = streak;
+      els.feedback.className = 'trivia-feedback correct-fb';
+      els.feedback.innerHTML = `<strong>✅ Correct!</strong> ${streak > 1 ? ' 🔥 ' + streak + ' in a row!' : ''}`;
+    } else {
+      btn.classList.add('wrong');
+      btn.classList.add('shake');
+      const prevStreak = streak;
+      streak = 0;
+      els.feedback.className = 'trivia-feedback wrong-fb';
+      els.feedback.innerHTML = `<strong>❌ Not quite.</strong> The answer is <strong>${currentQ.a}</strong>.${prevStreak >= 3 ? ' Streak of ' + prevStreak + ' ended.' : ''}`;
+    }
+
+    els.score.textContent = score;
+    els.streak.textContent = '🔥 ' + streak;
+    els.feedback.style.display = 'block';
+    els.next.style.display = 'block';
+    els.next.focus();
+  }
+
+  // ── Event Listeners ──
+  els.startBtn.addEventListener('click', startGame);
+  els.next.addEventListener('click', loadQuestion);
+
+  // Keyboard shortcut: 1-4 to pick answer, Enter/Space for next
+  document.addEventListener('keydown', (e) => {
+    if (activeTab !== 'trivia') return;
+    if (!answered) {
+      const num = parseInt(e.key);
+      if (num >= 1 && num <= 4) {
+        const btns = els.options.querySelectorAll('.trivia-option');
+        if (btns[num - 1]) btns[num - 1].click();
+      }
+    } else {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        els.next.click();
+      }
+    }
+  });
 })();
 </script>
 </body>
