@@ -228,15 +228,19 @@
   }
   .tl-desc {
     font-size: 14px; color: var(--text-muted); line-height: 1.6;
-    max-height: 44px; overflow: hidden; transition: max-height 0.3s ease;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden; max-height: 2.8em; transition: max-height 0.4s ease;
   }
-  .tl-card.expanded .tl-desc { max-height: 300px; }
-  .tl-toggle { font-size: 12px; margin-top: 4px; display: inline-block; }
+  .tl-card.expanded .tl-desc {
+    -webkit-line-clamp: unset; max-height: 500px;
+  }
+  .tl-toggle { font-size: 12px; margin-top: 6px; display: inline-block; cursor: pointer; opacity: 0.8; }
+  .tl-toggle:hover { opacity: 1; }
 
   /* ── Characters ── */
   .char-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 12px; margin-bottom: 24px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px; margin-bottom: 24px;
   }
   .char-btn {
     background: var(--bg-card); border-radius: 16px; padding: 20px 12px;
@@ -426,16 +430,31 @@
 <script>
 // ═══════════ DATA ═══════════
 const characters = [
+  // ── Original Season 1 Contestants ──
   { name:"Firey", emoji:"🔥", color:"#ff6b35", role:"Season 1 Winner", seasons:["BFDI","BFDIA","IDFB","BFB"], description:"The very first object show character ever created. A passionate and sometimes forgetful flame who won Season 1 with 406 votes. His rivalry with Coiny and complicated friendship with Leafy are central to the series.", trivia:"First ever object show winner in history" },
   { name:"Leafy", emoji:"🍃", color:"#06d6a0", role:"Fan Favorite / Anti-Hero", seasons:["BFDI","BFDIA","IDFB","BFB","TPOT"], description:"Appears kind and friendly on the surface, but has a complex two-faced nature. She infamously stole Dream Island with fake money after Firey wouldn't let her in, turning every contestant against her.", trivia:"Has a 'niceness chart' ranking other characters' kindness" },
   { name:"Bubble", emoji:"🫧", color:"#88ccff", role:"Season 1 Finalist", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"Sweet and innocent with a distinctive accent, replacing vowels with 'oi' sounds. Extremely fragile and pops constantly, but always recovers thanks to the Bubble Recovery Center. One of the most rational characters.", trivia:"Says 'Yoylecake!' as her catchphrase" },
-  { name:"Four", emoji:"4️⃣", color:"#ffe74c", role:"Host (BFB / TPOT)", seasons:["BFB","TPOT"], description:"A powerful and unpredictable Algebralian number who hosts Battle for BFB. Can screech contestants to kill them, recover the dead, and has reality-warping powers. Both feared and loved by fans.", trivia:"Based on the number 4 — part of the 'Algebralian' species" },
-  { name:"X", emoji:"✖️", color:"#ffd166", role:"Co-Host", seasons:["BFB","TPOT"], description:"Four's best friend and co-host. A kind and gentle Algebralian who treasures their baskets. Much more empathetic toward contestants than Four.", trivia:"X's 'value' has been debated by contestants in the show" },
   { name:"Flower", emoji:"🌸", color:"#ff69b4", role:"BFB Winner", seasons:["BFDI","BFDIA","BFB"], description:"Initially a loud, aggressive bully who destroys recovery centers and attacks others. Undergoes major character development in BFB, becoming more self-aware and ultimately winning the season.", trivia:"Second contestant ever to win a season of BFDI" },
   { name:"Pencil", emoji:"✏️", color:"#ff4757", role:"Alliance Leader", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"Leader of the FreeSmart alliance with Match, Bubble, Ruby, and Book. Can be bossy and harsh to those she considers beneath her. Won the unreleased prequel 'Total Firey Island'.", trivia:"Leader of the iconic 'FreeSmart' alliance" },
+  { name:"Coiny", emoji:"🪙", color:"#e8b030", role:"Firey's Rival", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"A coin who is Firey's arch-nemesis — the two constantly slap each other. A natural strategist and team leader who can be impulsive but cares about fairness. Their rivalry is one of the longest-running gags in the series.", trivia:"Has been slapping Firey since the very first episode" },
   { name:"Woody", emoji:"🪵", color:"#c8956c", role:"Underdog Hero", seasons:["BFDI","BFB","BFDIA"], description:"Originally a terrified balsa wood character afraid of everything. Gets incredible character development in BFB, overcoming his fears and becoming genuinely brave. Fan favorite redemption arc.", trivia:"Known for screaming — initially could barely speak" },
-  { name:"Two", emoji:"2️⃣", color:"#06d6a0", role:"Host (TPOT)", seasons:["TPOT"], description:"Another Algebralian who arrives to host The Power of Two. Much friendlier and more helpful than Four, genuinely wanting to assist contestants. Split BFB's 64 contestants, taking 40 for their own show.", trivia:"Caused the BFB/TPOT split by offering their powers as a prize" },
+  { name:"Ice Cube", emoji:"🧊", color:"#a8d8ea", role:"Quiet Schemer", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"Generally quiet but secretly has an intense side. Known for being very easy to kill (she shatters constantly) and becoming furious when wronged. Has an ax-crazy streak beneath her silent exterior.", trivia:"Has sworn revenge on multiple characters who wronged her" },
+  { name:"Teardrop", emoji:"💧", color:"#5baaec", role:"The Silent One", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"A completely silent character who communicates through actions and expressions alone. Despite never speaking a word, she's a strong competitor and surprisingly expressive. Fiercely independent.", trivia:"Has never spoken a single word in the entire series" },
+  { name:"Rocky", emoji:"🪨", color:"#9e9e9e", role:"The Wild Card", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"A small rock who barely speaks and is best known for vomiting constantly. Despite seeming useless, he has a dedicated fanbase and has survived many eliminations thanks to viewer sympathy.", trivia:"His main ability is barfing — which has actually won challenges" },
+  { name:"Pen", emoji:"🖊️", color:"#2196f3", role:"The Cool Guy", seasons:["BFDI","BFB","TPOT"], description:"A laid-back, friendly pen who is part of the popular 'guys' group with Eraser and Blocky. Generally well-liked by other contestants and rarely gets into conflicts. One of the most social characters.", trivia:"Part of the 'cool guys' trio with Eraser and Blocky" },
+  { name:"Needle", emoji:"🪡", color:"#cc88aa", role:"Don't Call Her Needy", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"A sewing needle who gets extremely upset when called 'Needy' — she'll slap anyone who says it. Otherwise fairly calm and collected. Her catchphrase reaction is one of the most iconic running gags.", trivia:"Will instantly slap anyone who calls her 'Needy'" },
+  { name:"Spongy", emoji:"🧽", color:"#d4a843", role:"The Outcast", seasons:["BFDI","BFDIA","BFB"], description:"A large, absorbent sponge who is often mistreated and excluded by other contestants due to his size and smell. Despite being bullied, he tries to be helpful and has a surprisingly resilient spirit.", trivia:"Frequently rejected from teams due to his size" },
   { name:"Golf Ball", emoji:"⛳", color:"#e8e8e8", role:"The Strategist", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"Bossy, highly intelligent, and always trying to lead. Often paired with Tennis Ball, her closest ally. Runs a factory called 'Golf Ball's Underground Factory' and considers herself the smartest contestant.", trivia:"Has her own underground factory with advanced tech" },
+  { name:"Tennis Ball", emoji:"🎾", color:"#c8d84c", role:"The Loyal Sidekick", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"Golf Ball's best friend and most loyal supporter. Calm, reasonable, and good-natured, he often serves as a voice of reason when Golf Ball gets too bossy. One of the most consistently likeable characters.", trivia:"Best friends with Golf Ball since the very beginning" },
+  { name:"Match", emoji:"🔥", color:"#ff7043", role:"The Mean Girl", seasons:["BFDI","BFDIA","BFB"], description:"Pencil's best friend and co-leader of the FreeSmart alliance. Speaks in a valley girl accent peppered with 'like' and can be exclusionary and harsh. Has moments of genuine kindness beneath the attitude.", trivia:"Says 'like' in almost every sentence she speaks" },
+  { name:"Blocky", emoji:"🟥", color:"#e53935", role:"The Prankster", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"A red building block known for his violent pranks on other contestants, which he films for 'Blocky's Funny Doings International.' Can be a bully but is popular among the male characters.", trivia:"Runs his own prank show called 'Blocky's Funny Doings International'" },
+  { name:"Eraser", emoji:"🧱", color:"#e88090", role:"The Follower", seasons:["BFDI","BFB","TPOT"], description:"A pink eraser who hangs out with Pen and Blocky as part of the 'cool guys' group. Not the brightest contestant but loyal to his friends. Often goes along with whatever his friends are doing.", trivia:"One of the original 'cool guys' trio alongside Pen and Blocky" },
+  { name:"Snowball", emoji:"⚪", color:"#c0d8f0", role:"The Bully", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"An aggressive and short-tempered snowball who relies on physical strength. One of the most antagonistic original contestants, frequently bullying and threatening others to get his way.", trivia:"One of the most physically aggressive characters in the series" },
+  { name:"Pin", emoji:"📌", color:"#e04050", role:"The Leader", seasons:["BFDI","BFDIA","BFB","TPOT"], description:"A thumbtack who was the original leader of the Squishy Cherries team. Authoritative and determined, she has a 'Gratitude Token' that plays an important role. Generally tries to do the right thing.", trivia:"Owns a 'Gratitude Token' that becomes a key plot device" },
+  // ── Hosts & Later Characters ──
+  { name:"Four", emoji:"4️⃣", color:"#ffe74c", role:"Host (BFB / TPOT)", seasons:["BFB","TPOT"], description:"A powerful and unpredictable Algebralian number who hosts Battle for BFB. Can screech contestants to kill them, recover the dead, and has reality-warping powers. Both feared and loved by fans.", trivia:"Based on the number 4 — part of the 'Algebralian' species" },
+  { name:"X", emoji:"✖️", color:"#ffd166", role:"Co-Host", seasons:["BFB","TPOT"], description:"Four's best friend and co-host. A kind and gentle Algebralian who treasures their baskets. Much more empathetic toward contestants than Four.", trivia:"X's 'value' has been debated by contestants in the show" },
+  { name:"Two", emoji:"2️⃣", color:"#06d6a0", role:"Host (TPOT)", seasons:["TPOT"], description:"Another Algebralian who arrives to host The Power of Two. Much friendlier and more helpful than Four, genuinely wanting to assist contestants. Split BFB's 64 contestants, taking 40 for their own show.", trivia:"Caused the BFB/TPOT split by offering their powers as a prize" },
   { name:"Announcer", emoji:"📢", color:"#888888", role:"Original Host", seasons:["BFDI","BFDIA","BFDIE"], description:"The mysterious robotic speaker box who started the entire competition by offering Dream Island as a prize. Monotone and detached, treating contestants more like game pieces than people.", trivia:"Dropped from the sky to start the very first competition" },
   { name:"Loser", emoji:"🏆", color:"#f0c040", role:"Fan Idol", seasons:["BFB"], description:"Despite the name, Loser is beloved by almost every contestant. Charismatic and inspirational, though revealed to have been dishonest about some achievements. His elimination was a major shock.", trivia:"Every contestant wanted to be on his team" },
 ];
